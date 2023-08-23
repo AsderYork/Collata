@@ -9,7 +9,7 @@
         @blur="focusLost" 
         v-bind="$attrs"
         @keydown.enter="focusLost">
-    <div :class="{'d-none':isEditing}" @click="turnToEdit">{{ value }}</div>
+    <div :class="Object.assign({'d-none':isEditing}, spanclass)" @click="turnToEdit">{{ value }}</div>
 </div>
 </template>
 <script setup>
@@ -21,6 +21,7 @@ const props = defineProps({
     editable:Boolean,
     inputclass:Object,
     cantBeEmpty:Boolean,
+    spanclass:Object,
 })
 
 const inputRef = ref(null);
