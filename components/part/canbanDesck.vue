@@ -35,7 +35,7 @@
                     <div class="cardstack card">
                         <div class="cardstack-header py-1">
                             <div class="px-1 d-flex justify-content-between">
-                                <b class="mb-0 d-flex justify-content-center flex-column">
+                                <b class="mb-0 d-flex justify-content-center flex-column w-100">
                                     <MiscEditinput v-model="cardblock.name" :spanclass="{'mx-1':true}" :inputclass="{'form-control-sm':true, 'form-control-outline-0':true, 'focus-ring':true}" :editable="true" :cantBeEmpty="true"/>
                                 </b>
                                
@@ -51,17 +51,18 @@
                             </div>
                         </div>
                         <div class="cardstack-end px-1 py-1">
-                            <a href="#" class="btn btn-outline-secondary p-1"><font-awesome-icon :icon="['fas', 'plus']" /> New Card</a>
+                            <a href="#" class="btn btn-outline-secondary p-1" @click="showCard()"><font-awesome-icon :icon="['fas', 'plus']"/> New Card</a>
                         </div>
                     </div>
                 </template>
             </draggable>
         </client-only>
 
-        <a href="#"><font-awesome-icon icon="fa-solid fa-wrench" @click="elementsEditForm.showModal()"/></a>
-        <miscFormModalClean ref="elementsEditForm">
-            <PartCardBody></PartCardBody>
+        <miscFormModalClean ref="elementsEditForm" @onOpen="cardbody.open()">
+            <PartCardBody ref="cardbody"></PartCardBody>
         </miscFormModalClean>
+
+        
 
         
 
@@ -93,9 +94,11 @@ const cardblocks = ref([]);
 
 const newCardBlock = ref({});
 
+
+
 const CardBlockPlanInputRef = ref(null);
 const elementsEditForm = ref(null);
-
+const cardbody = ref(null);
 
 function addNewCardblockPlan() {
     newCardBlock.value.active = true;
@@ -128,5 +131,10 @@ function newCardBlockLostFocus(event) {
 function removeCardblock(id) {
     cardblocks.value = cardblocks.value.filter(x => x.id !== id);
 }
+
+function showCard() {
+    elementsEditForm.value.showModal()
+}
+
 
 </script>

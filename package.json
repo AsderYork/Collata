@@ -24,6 +24,8 @@
     "bootstrap": "5.3.0",
     "h3-formidable": "^0.3.8",
     "uuid": "9.0.0",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "markdown-it": "^13.0.1",
+    "@types/markdown-it": "^12.2.3"
   }
 }

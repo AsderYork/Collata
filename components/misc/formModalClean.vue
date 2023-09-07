@@ -2,7 +2,7 @@
     <div class="modal fade" :class="{show:isModalShown}" :id="modalName" tabindex="-1" :aria-labelledby="modalLabelName" style="display: block;" :style="{'pointer-events': isModalShown ? 'all' : 'none'} " @click.self="hideModal()">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-body">
+                <div class="modal-body p-0">
                     <slot/>
                 </div>
             </div>
@@ -15,7 +15,7 @@ const id = 1;
 const modalName = 'modal' + id;
 const modalLabelName = 'modal' + id + 'Label';
 
-const emit = defineEmits(['onClose']);
+const emit = defineEmits(['onClose', 'onOpen']);
 
 const passedEventHandle = ref(null);
 
@@ -35,6 +35,7 @@ isModalShown.value = props.shown;
 function showModal(currentEventHandle = null) {
     passedEventHandle.value = currentEventHandle;
     isModalShown.value = true;
+        emit('onOpen');
 }
 
 function hideModal() {

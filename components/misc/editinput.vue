@@ -1,6 +1,18 @@
 <template>
 <div >
+    <textarea
+        v-if="textarea"
+        ref="inputRef" 
+        :class="Object.assign({'d-none':!isEditing}, inputclass)" 
+        class="form-control" 
+        type="text" 
+        v-model="value" 
+        @blur="focusLost" 
+        v-bind="$attrs"
+        rows="1"
+        @keydown.enter="focusLost"></textarea>
     <input 
+        v-else
         ref="inputRef" 
         :class="Object.assign({'d-none':!isEditing}, inputclass)" 
         class="form-control" 
@@ -9,6 +21,7 @@
         @blur="focusLost" 
         v-bind="$attrs"
         @keydown.enter="focusLost">
+       
     <div :class="Object.assign({'d-none':isEditing}, spanclass)" @click="turnToEdit">{{ value }}</div>
 </div>
 </template>
@@ -22,6 +35,7 @@ const props = defineProps({
     inputclass:Object,
     cantBeEmpty:Boolean,
     spanclass:Object,
+    textarea:Boolean
 })
 
 const inputRef = ref(null);
