@@ -16,16 +16,8 @@
             </div>
         </div>
 
-        
-        <miscFormModalClean ref="addMarkModal">
-            <input type="color">
+        <AppTextEditor v-model="text"/>
 
-
-        </miscFormModalClean>
-
-        <MiscRichTextMd></MiscRichTextMd>
-        
-        {{ header }}
     </div>
 </template>
 
@@ -37,8 +29,6 @@ const headerElement =ref(null)
 const header = ref('');
 const text = ref('');
 
-
-const mdblock = ref({content:''});
 
 
 function open() {

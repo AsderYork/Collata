@@ -1,5 +1,9 @@
 <template>
     <div>
-        <PartCanbanDesck></PartCanbanDesck>
+    <PartCanbanDesck></PartCanbanDesck>
     </div>
 </template>
+
+<script setup>
+
+</script>
