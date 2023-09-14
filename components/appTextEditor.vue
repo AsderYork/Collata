@@ -1,18 +1,19 @@
 <template>
-    <div id="text-editor" class="d-flex flex-column" style="overflow: hidden;">
-      <div class="toolbar" v-if="editor">
+    <div id="text-editor" class="d-flex flex-column border-0 tiptaptexteditor" :class="{'tiptaptexteditor-presentmode':presentMode}" style="overflow: hidden;" @focusout="onFocusOut" ref="editorref">
+      <div class="toolbar" v-if="editor && !presentMode">
         <button
           v-for="({ slug, option, active, icon }, index) in textActions"
-          class="btn btn-sm"
+          class="btn btn-sm m-0 rounded-0"
           :class="{ active: editor.isActive(active) || (slug === 'code' && !editorVisible) }"
-          @click="onActionClick(slug, option)"
+          @click="onActionClick(slug, option);"
+          tabindex="0"
         >
           <i :class="icon"></i>
           <font-awesome-icon :icon="['fas', icon]" />
         </button>
       </div>
 
-      <editor-content :editor="editor" v-if="editorVisible" tabindex="1" style="overflow-y: auto; overflow-x: hidden; height: 100%;"/>
+      <editor-content :editor="editor" v-if="editorVisible" tabindex="1" style="overflow-y: auto; overflow-x: hidden; height: 100%;" @click="makeEditable"/>
       <textarea class="w-100" v-model="innerValue" @keyup="rawTextClick" v-else style="height: 100%;"></textarea>
 
     </div>
@@ -44,11 +45,12 @@
       },
     },
     data() {
-      const selfref = this;
       return {
+        presentMode: false,
         innerValue: this.modelValue,
         editorVisible: true,
         editor: null,
+        editable: true,
         textActions: [
           { slug: 'bold', icon: 'bold', active: 'bold' },
           { slug: 'italic', icon: 'italic', active: 'italic' },
@@ -111,6 +113,11 @@
         this.editor.commands.setContent(this.modelValue, false);
         this.innerValue = this.editor.storage.markdown.getMarkdown();
       },
+      presentMode(value) {
+        if(value) {
+          this.editor.setOptions({editable: value});
+        }
+      }
     },
     methods: {
       onActionClick(slug, option = null) {
@@ -138,6 +145,14 @@
         };
   
         actionTriggers[slug]();
+        
+        console.log('ednddd')
+
+        nextTick(() => {
+          nextTick(() => {this.presentMode = false; console.log('asdqwe')})
+          
+        })
+
       },
       onHeadingClick(index) {
         const vm = this.editor.chain().focus();
@@ -149,6 +164,15 @@
       rawTextClick() {
         this.editor.commands.setContent(this.innerValue, false);
         this.$emit('update:modelValue', this.editor.storage.markdown.getMarkdown());
+      },
+      makeEditable() {
+          this.presentMode = false;
+          this.editor.setOptions({editable: true});
+      },
+      onFocusOut(event) {
+        if(!(event.relatedTarget && this.editorref.contains(event.relatedTarget))) {
+          this.presentMode = true;
+        }
       }
 
     },
@@ -182,10 +206,21 @@
           this.$emit('update:modelValue', this.editor.storage.markdown.getMarkdown());
         },
       });
+
+      if(this.presentMode == false) {
+          this.editor.setOptions({editable: false});
+      }
+
     },
     beforeUnmount() {
       this.editor.destroy();
     },
+    setup() {
+      const editorref = ref(null);
+      return {
+        editorref
+      }
+    }
   };
   </script>
   
@@ -197,7 +232,7 @@
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      border-bottom: 1px solid #808080;
+      border-bottom: 1px solid #7c7c7c;
   
       > button {
         display: flex;
