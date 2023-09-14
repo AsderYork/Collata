@@ -1,7 +1,7 @@
 <template>
-    <div class="modal fade" :class="{show:isModalShown}" :id="modalName" tabindex="-1" :aria-labelledby="modalLabelName" style="display: block;" :style="{'pointer-events': isModalShown ? 'all' : 'none'} " @click.self="hideModal()">
+    <div class="modal fade" :class="{show:isModalShown}" :id="modalName" tabindex="-1" :aria-labelledby="modalLabelName" style="display: block;" :style="{'pointer-events': isModalShown ? 'all' : 'none'} " @mousedown.self="hideModal">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content" :style="contentStyle">
                 <div class="modal-body p-0">
                     <slot/>
                 </div>
@@ -28,6 +28,7 @@ const modalTitle = computed(() => {return props.title ?? 'default modal title';}
 const props = defineProps({
     'shown': Boolean,
     'fields': Object,
+    'contentStyle': Object,
 })
 
 isModalShown.value = props.shown;
@@ -44,6 +45,7 @@ function hideModal() {
         emit('onClose');
     }
 }
+
 
 defineExpose({showModal, hideModal});
 

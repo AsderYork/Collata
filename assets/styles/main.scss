@@ -5,3 +5,12 @@ $enable-negative-margins: true;
 .modal.fade {
     background-color: #000000a8!important;
 }
+
+
+@media (min-width: 800px) {
+    .modal-dialog {
+        max-width: 700px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+}

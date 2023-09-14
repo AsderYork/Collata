@@ -1,10 +1,10 @@
 <template>
-    <div id="text-editor" style="background-color: rgb(57, 61, 61); color: aliceblue;">
+    <div id="text-editor" class="d-flex flex-column" style="overflow: hidden;">
       <div class="toolbar" v-if="editor">
         <button
           v-for="({ slug, option, active, icon }, index) in textActions"
           class="btn btn-sm"
-          :class="{ active: editor.isActive(active) }"
+          :class="{ active: editor.isActive(active) || (slug === 'code' && !editorVisible) }"
           @click="onActionClick(slug, option)"
         >
           <i :class="icon"></i>
@@ -12,8 +12,8 @@
         </button>
       </div>
 
-      <editor-content :editor="editor" v-if="editorVisible"/>
-      <textarea class="w-100" v-model="innerValue" @keyup="rawTextClick" v-else></textarea>
+      <editor-content :editor="editor" v-if="editorVisible" tabindex="1" style="overflow-y: auto; overflow-x: hidden; height: 100%;"/>
+      <textarea class="w-100" v-model="innerValue" @keyup="rawTextClick" v-else style="height: 100%;"></textarea>
 
     </div>
   </template>
@@ -134,7 +134,6 @@
           },
           code: () => {
             self.toggleEditorVisibility(true);
-            console.log('clocked');
           }
         };
   
@@ -307,15 +306,17 @@
     .ProseMirror {
         padding: 3px;
     }
-    .ProseMirror p:last-child {
+    .ProseMirror p {
         margin-bottom: 0px;
     }
 
     #text-editor textarea {
-      background: #242727;
-      color: white;
       outline: 0;
       margin-bottom: -6px;
+    }
+    
+    .tiptap.ProseMirror {
+      height: 100%;
     }
 
 </style>

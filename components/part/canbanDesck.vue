@@ -58,7 +58,7 @@
             </draggable>
         </client-only>
 
-        <miscFormModalClean ref="elementsEditForm" @onOpen="cardbody.open()">
+        <miscFormModalClean ref="elementsEditForm" @onOpen="cardbody.open()" :contentStyle="{height:'80vh'}">
             <PartCardBody ref="cardbody"></PartCardBody>
         </miscFormModalClean>
 
