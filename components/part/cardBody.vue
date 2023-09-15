@@ -11,7 +11,7 @@
             </div>
             <div>
                 <div>
-                    <button class="btn btn-sm btn-outline-secondary border-0 rounded-top-0" title="Add mark" @click.prevent="addMarkModal.showModal()">
+                    <button tabindex="-1" class="btn btn-sm btn-outline-secondary border-0 rounded-top-0" title="Add mark" @click.prevent="addMarkModal.showModal()">
                         <font-awesome-icon :icon="['fa', 'bookmark']" /> <font-awesome-icon :icon="['fa', 'plus']" />
                     </button>
                 </div>
@@ -43,6 +43,10 @@ function open() {
 
 
 defineExpose({open});
+
+onMounted(() => {
+    headerElement.value.focus();
+})
 
 
 </script>

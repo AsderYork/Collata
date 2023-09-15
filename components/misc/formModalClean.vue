@@ -1,6 +1,6 @@
 <template>
     <div class="modal fade" :class="{show:isModalShown}" :id="modalName" tabindex="-1" :aria-labelledby="modalLabelName" style="display: block;" :style="{'pointer-events': isModalShown ? 'all' : 'none'} " @mousedown.self="hideModal">
-        <div class="modal-dialog">
+        <div class="modal-dialog" v-if="isModalShown">
             <div class="modal-content" :style="contentStyle">
                 <div class="modal-body p-0">
                     <slot/>

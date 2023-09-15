@@ -46,7 +46,7 @@
     },
     data() {
       return {
-        presentMode: false,
+        presentMode: true,
         innerValue: this.modelValue,
         editorVisible: true,
         editor: null,
@@ -114,9 +114,7 @@
         this.innerValue = this.editor.storage.markdown.getMarkdown();
       },
       presentMode(value) {
-        if(value) {
-          this.editor.setOptions({editable: value});
-        }
+          this.editor.setOptions({editable: !value});        
       }
     },
     methods: {
@@ -143,16 +141,7 @@
             self.toggleEditorVisibility(true);
           }
         };
-  
         actionTriggers[slug]();
-        
-        console.log('ednddd')
-
-        nextTick(() => {
-          nextTick(() => {this.presentMode = false; console.log('asdqwe')})
-          
-        })
-
       },
       onHeadingClick(index) {
         const vm = this.editor.chain().focus();
@@ -167,7 +156,6 @@
       },
       makeEditable() {
           this.presentMode = false;
-          this.editor.setOptions({editable: true});
       },
       onFocusOut(event) {
         if(!(event.relatedTarget && this.editorref.contains(event.relatedTarget))) {
@@ -201,13 +189,16 @@
             openOnClick: true,
           }),
         ],
+        onFocus: () => {
+          this.presentMode = false;
+        },
         onUpdate: () => {
           this.innerValue = this.editor.storage.markdown.getMarkdown();
           this.$emit('update:modelValue', this.editor.storage.markdown.getMarkdown());
         },
       });
 
-      if(this.presentMode == false) {
+      if(this.presentMode == true) {
           this.editor.setOptions({editable: false});
       }
 
