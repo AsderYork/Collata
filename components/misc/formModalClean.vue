@@ -46,6 +46,14 @@ function hideModal() {
     }
 }
 
+onMounted(() => {
+    document.addEventListener('keyup', function (evt) {
+        if (evt.keyCode === 27) {
+            hideModal();
+        }
+    });
+});
+
 
 defineExpose({showModal, hideModal});
 

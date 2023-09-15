@@ -20,7 +20,7 @@
         <AppTextEditor :content="text" style="height: 100%;" class="rounded m-1"></AppTextEditor>
 
         <div>
-            <button class="btn btn-sm btn-primary rounded-top-0 rounded">Save</button>
+            <button class="btn btn-sm btn-primary rounded-top-0 rounded rounded-end-1">Save</button>
         </div>
 
     </div>
