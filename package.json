@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "collata",
   "private": true,
   "prisma": {
     "seed": "node prisma/seed.js"

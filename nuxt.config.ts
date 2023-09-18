@@ -1,5 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  meta: {
+    title: 'Collata',
+  },
   devtools: { enabled: false },
   modules: ['@sidebase/nuxt-auth'],
   auth: {

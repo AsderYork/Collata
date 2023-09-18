@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" :class="{show:isModalShown}" :id="modalName" tabindex="-1" :aria-labelledby="modalLabelName" :style="{display: modalDisplayProp}">
+    <div class="modal fade" :class="{show:isModalShown}" :id="modalName" tabindex="-1" :aria-labelledby="modalLabelName" :style="{display: modalDisplayProp}" @mousedown.self="hideModal">
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header p-1 px-2">
@@ -50,7 +50,7 @@ const props = defineProps({
 
 isModalShown.value = props.shown;
 
-const emit = defineEmits(['save', 'buttonClicked'])
+const emit = defineEmits(['save', 'buttonClicked', 'onClose'])
 
 const activeButtons = computed(() => {return props.buttons ? props.buttons : [{click:save, text:'Save changes'}]});
 
@@ -76,8 +76,20 @@ function showModal(currentEventHandle = null) {
 }
 
 function hideModal() {
-    isModalShown.value = false;
+    if(isModalShown.value) {
+        isModalShown.value = false;
+        emit('onClose');
+    }
 }
+
+
+onMounted(() => {
+    document.addEventListener('keyup', function (evt) {
+        if (evt.keyCode === 27) {
+            hideModal();
+        }
+    });
+});
 
 defineExpose({showModal, hideModal});
 

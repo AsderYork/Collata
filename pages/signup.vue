@@ -16,7 +16,7 @@ body {
                         <form class="card-body p-5 py-2  text-center" method="post" @submit.prevent="attemptSignUp()">
 
                             <div>
-                                <h1 class="fw-bold mb-0 text-uppercase">Lowball</h1>
+                                <h1 class="fw-bold mb-0 text-uppercase">Collata</h1>
                                 <h5 class="fw-bold mb-2 text-uppercase border-top">Take your tasks and move 'em around</h5>
 
                                 <div v-if="!isLoading" class="mt-md-4">
