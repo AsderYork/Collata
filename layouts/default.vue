@@ -27,9 +27,13 @@ html, body {
                                 placeholder="Search..." aria-label="Search">
                         </form>
 
-                        <div class="text-end">
-                            <button type="button" class="btn btn-sm btn-outline-light me-2">Login</button>
-                            <button type="button" class="btn btn-sm btn-warning">Sign-up</button>
+                        <div class="text-end d-flex">
+                            <div class="d-flex">
+                                <div class="border rounded rounded-end-0 px-2 d-flex">{{ userLogin }}</div>
+                                <button type="button" class="btn btn-sm btn-outline-light me-2 rounded-start-0" @click.prevent="signOut( {callbackUrl:'/auth'})">
+                                    <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -40,3 +44,12 @@ html, body {
         <slot />
     </div>
 </template>
+
+<script setup>
+
+
+const { data, signOut } = useAuth()
+const userLogin = ref(data?.value?.login)
+
+
+</script>
