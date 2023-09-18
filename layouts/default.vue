@@ -29,7 +29,7 @@ html, body {
 
                         <div class="text-end d-flex">
                             <div class="d-flex">
-                                <div class="border rounded rounded-end-0 px-2 d-flex">{{ userLogin }}</div>
+                                <div class="border rounded rounded-end-0 px-2 d-flex">{{ username }}</div>
                                 <button type="button" class="btn btn-sm btn-outline-light me-2 rounded-start-0" @click.prevent="signOut( {callbackUrl:'/auth'})">
                                     <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
                                 </button>
@@ -49,7 +49,7 @@ html, body {
 
 
 const { data, signOut } = useAuth()
-const userLogin = ref(data?.value?.login)
+const username = ref(data?.value?.name)
 
 
 </script>

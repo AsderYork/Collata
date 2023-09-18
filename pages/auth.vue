@@ -1,6 +1,8 @@
 <style>
+html {
+    background: #505050;
+}
 body { 
-    background: black;
     background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(240,165,255,0.4514180672268907) 0%, rgba(77,39,138,0.29735644257703087) 22%, rgba(198,102,102,0.1825105042016807) 47%, rgba(198,102,102,0) 75%);
 }
 </style>
@@ -24,17 +26,13 @@ body {
                                         <label class="form-label" for="typeEmailX" >Login/Email</label>
                                     </div>
 
-                                    <div class="form-outline form-white">
+                                    <div class="form-outline form-white  mb-5 pb-lg-2">
                                         <input type="password" id="typePasswordX" class="form-control form-control-lg" name="pasword" v-model="password"/>
                                         <label class="form-label mb-0" for="typePasswordX">Password</label>
                                         <div>
                                             <small class="text-danger">{{ lastError }}</small>
                                         </div>
                                     </div>
-
-                                    <p class="small mb-5 pb-lg-2">
-                                        <a class="text-white-50" href="#!">Forgot password?</a>
-                                    </p>
 
                                     <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
                                     <div>
