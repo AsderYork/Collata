@@ -12,7 +12,7 @@ export default eventHandler(async (event) => {
   }
 
   var user = await getUsersByLogin(result.data.login);
-  if (user !== null) {
+  if (user !== null && user.length > 0) {
     throw createError({ statusCode: 403, statusMessage: 'User with this login allready exists' })
   }
 

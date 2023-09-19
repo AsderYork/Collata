@@ -36,7 +36,7 @@ body {
 
                                     <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
                                     <div>
-                                        <p class="mb-0 mt-1">Don't have an account? <a href="#!" class="text-white-50 fw-bold">Sign Up</a>
+                                        <p class="mb-0 mt-1">Don't have an account? <a href="/signup" class="text-white-50 fw-bold">Sign Up</a>
                                         </p>
                                     </div>
                                 </div>
