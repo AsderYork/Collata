@@ -37,18 +37,23 @@ model Boards {
 model Cardstacks {
   id                    Int         @id @default(autoincrement())
   name                  String
+  uuid                  String
   author                Users       @relation(fields: [authorId], references: [id])
   authorId              Int
   createdAt             DateTime    @default(now()) 
   trash                 Boolean     @default(false)
   board                 Boards      @relation(fields: [boardId], references: [id])
   boardId               Int
+  order                 Int
   cards                 Cards[]
 }
 
 model Cards {
   id                    Int         @id @default(autoincrement())
   name                  String
+  text                  String?
+  order                 Int
+  uuid                  String
   author                Users       @relation(fields: [authorId], references: [id])
   authorId              Int
   createdAt             DateTime    @default(now()) 

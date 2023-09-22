@@ -20,7 +20,7 @@
             </div>
             <div class="modal-footer p-1" v-if="!noButtons">
                 <button type="button" class="btn btn-sm btn-secondary" @click="hideModal()">Close</button>
-                <button v-for="button in activeButtons" type="button" class="btn btn-sm" :class="[('btn-' + (button.color ?? 'primary'))]" @click="button.click ? button.click : buttonClicked(button)">{{button.text}}</button>
+                <button v-for="button in activeButtons" type="button" class="btn btn-sm" :class="[('btn-' + (button.color ?? 'primary'))]" @click="button.click ? button.click() : buttonClicked(button)">{{button.text}}</button>
             </div>
             </div>
         </div>

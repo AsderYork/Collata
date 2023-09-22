@@ -3,7 +3,7 @@
         <div class="p-1 border-bottom">
             <div class="d-flex border-bottom">
                 <div class="w-100 pe-1">
-                    <MiscResizableScroll v-model="header" class="fw-bold rounded-bottom-0 rounded-end-0 px-1 my-0 card-header" ref="headerElement"></MiscResizableScroll>
+                    <MiscResizableScroll v-model="card.name" class="fw-bold rounded-bottom-0 rounded-end-0 px-1 my-0 card-header" ref="headerElement"></MiscResizableScroll>
                 </div>
                 <div class="btn btn-sm btn-outline-secondary rounded-start-0 rounded-bottom-0 mt-n1 me-n1 border-0 card-header-angle-btn" @click="emit('requestClose')">
                     <font-awesome-icon :icon="['fas', 'times']" />
@@ -17,10 +17,10 @@
                 </div>
             </div>
         </div>
-        <AppTextEditor :content="text" style="height: 100%;" class="rounded m-1"></AppTextEditor>
+        <AppTextEditor v-model="card.text" style="height: 100%;" class="rounded m-1"></AppTextEditor>
 
         <div>
-            <button class="btn btn-sm btn-primary rounded-top-0 rounded rounded-end-1">Save</button>
+            <button class="btn btn-sm btn-primary rounded-top-0 rounded rounded-end-1" @click.prevent="saveCard()">Save</button>
         </div>
 
     </div>
@@ -28,13 +28,21 @@
 
 <script setup>
 
+const props = defineProps({
+    modelValue: {type: Object, default: {name:'', text:''}}
+})
+const emit = defineEmits(['requestClose', 'save', 'update:modelValue'])
+
+
+
 const addMarkModal = ref(null)
 const headerElement =ref(null)
 
-const header = ref('');
-const text = ref('');
+const card = ref(props.modelValue);
 
-const emit = defineEmits(['requestClose'])
+watch(card, () => {
+    emit('update:modelValue', card);
+})
 
 
 function open() {
@@ -47,6 +55,12 @@ defineExpose({open});
 onMounted(() => {
     headerElement.value.focus();
 })
+
+function saveCard() {
+    emit('save');
+    emit('requestClose');
+}
+
 
 
 </script>

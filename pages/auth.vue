@@ -80,7 +80,7 @@ async function attemptSignIn() {
 
     try {
         const signInObj = {login:login.value, password:password.value};
-        var res = await signIn(signInObj, {callbackUrl:'/'});
+        var res = await signIn(signInObj, {callbackUrl:'/boards'});
     } catch(exception) {
         lastError.value = exception.statusMessage; 
     }

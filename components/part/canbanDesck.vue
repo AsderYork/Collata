@@ -24,19 +24,28 @@
     border: 3px dashed gray;
 }
 
+.cardstack-card {
+    font-size: 120%;
+    border-width: 2px!important;
+    -webkit-box-shadow: 4px 4px 8px 0px rgba(240, 240, 240, 0.2);
+    -moz-box-shadow: 4px 4px 8px 0px rgba(240, 240, 240, 0.2);
+    box-shadow: 4px 4px 8px 0px rgba(185, 185, 185, 0.2);
+}
+
+
 </style>
 
 <template>
     <div class="worktable p-2">
 
         <client-only>
-            <draggable v-model="cardblocks" item-key="id" group="elements" class="active-cards">
+            <draggable v-model="cardblocks" item-key="id" group="elements" class="active-cards" @end="cardblockReorder">
                 <template #item="{element:cardblock}">
                     <div class="cardstack card">
                         <div class="cardstack-header py-1">
                             <div class="px-1 d-flex justify-content-between">
                                 <b class="mb-0 d-flex justify-content-center flex-column w-100">
-                                    <MiscEditinput v-model="cardblock.name" :spanclass="{'mx-1':true}" :inputclass="{'form-control-sm':true, 'form-control-outline-0':true, 'focus-ring':true}" :editable="true" :cantBeEmpty="true"/>
+                                    <MiscEditinput v-model="cardblock.name" :spanclass="{'mx-1':true}" :inputclass="{'form-control-sm':true, 'form-control-outline-0':true, 'focus-ring':true}" :editable="true" :cantBeEmpty="true" @blur="updateCardstack(cardblock)"/>
                                 </b>
                                
                                 <div class="dropdown">
@@ -44,14 +53,27 @@
                                         <font-awesome-icon :icon="['fas', 'ellipsis']" />
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li @click="removeCardblock(cardblock.id)"><a class="dropdown-item" href="#"><font-awesome-icon :icon="['fas', 'trash-alt']" /> Trash cardblock</a></li>
+                                        <li @click="removeCardblock(cardblock)"><a class="dropdown-item" href="#"><font-awesome-icon :icon="['fas', 'trash-alt']" /> Trash cardblock</a></li>
                                     </ul>
                                 </div>
-
                             </div>
                         </div>
+
+                        <div class="d-flex flex-column">
+                            <draggable v-model="cardblock.cards" item-key="id" group="cards" @end="cardblockReorder">
+                                <template #item="{element:card}">
+                                    <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="showCard(card, cardblock)">
+                                        <b>{{card.name}}</b>
+                                    </div>
+                                </template>
+                            </draggable>
+                            
+                        </div>
+                        
+
+
                         <div class="cardstack-end px-1 py-1">
-                            <a href="#" class="btn btn-outline-secondary p-1" @click="showCard()"><font-awesome-icon :icon="['fas', 'plus']"/> New Card</a>
+                            <a href="#" class="btn btn-outline-secondary p-1" @click="showCard({}, cardblock)"><font-awesome-icon :icon="['fas', 'plus']"/> New Card</a>
                         </div>
                     </div>
                 </template>
@@ -59,7 +81,7 @@
         </client-only>
 
         <miscFormModalClean ref="elementsEditForm" :contentStyle="{height:'80vh', background:'#efefef'}">
-            <PartCardBody ref="cardbody" @requestClose="elementsEditForm.hideModal()"></PartCardBody>
+            <PartCardBody ref="cardbody" @requestClose="elementsEditForm.hideModal()" @save="saveCard" v-model="currentCard"></PartCardBody>
         </miscFormModalClean>
 
         
@@ -88,9 +110,20 @@
 </template>
 
 <script setup>
-import { v4 as uuidv4 } from 'uuid';
+import draggableComponent from 'vuedraggable';
 
-const cardblocks = ref([]);
+
+const props = defineProps({
+    cardstacks: {type:Object},
+})
+
+const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard'])
+
+const cardblocks = ref(props.cardstacks);
+
+watch(() => props.cardstacks, () => {
+    cardblocks.value = props.cardstacks;
+})
 
 const newCardBlock = ref({});
 
@@ -99,6 +132,9 @@ const newCardBlock = ref({});
 const CardBlockPlanInputRef = ref(null);
 const elementsEditForm = ref(null);
 const cardbody = ref(null);
+
+const currentCard = ref({});
+
 
 function addNewCardblockPlan() {
     newCardBlock.value.active = true;
@@ -113,10 +149,14 @@ function stopNewCardBlockPlan() {
 
 function addNewCardblock() {
     if(CardBlockPlanInputRef.value.value != '') {
-        cardblocks.value.push({
+
+        var newCardstack = {
             name:CardBlockPlanInputRef.value.value,
-            id:uuidv4(),
-        })
+            order:cardblocks.value.length,
+        };
+
+        emit('newCardstack', newCardstack);
+        cardblocks.value.push(newCardstack);
     }
     CardBlockPlanInputRef.value.value = '';
 
@@ -128,13 +168,42 @@ function newCardBlockLostFocus(event) {
     stopNewCardBlockPlan();
 }
 
-function removeCardblock(id) {
-    cardblocks.value = cardblocks.value.filter(x => x.id !== id);
+function removeCardblock(cardstack) {
+    emit('deleteCardstack', cardstack)
 }
 
-function showCard() {
+function updateCardstack(cardstack) {
+    emit('updateCardstack', cardstack);
+}
+
+function showCard(card, cardblock) {
+    currentCard.value = Object.assign(card ?? {}, {cardstack: cardblock});
     elementsEditForm.value.showModal()
 }
+
+function cardblockReorder() {
+
+    var toSend = [];
+    for(var i in cardblocks.value) {
+        cardblocks.value[i].order = i;
+        toSend.push({id:cardblocks.value[i].id, order: cardblocks.value[i].order, cards:[]});
+        for(var j in cardblocks.value[i].cards) {
+            cardblocks.value[i].cards[j].order = j;
+            toSend[i].cards.push({id:cardblocks.value[i].cards[j].id, order: cardblocks.value[i].cards[j].order});
+        }
+    }
+    emit('reorderCardstack', toSend);
+}
+
+function saveCard() {
+    emit('saveCard', currentCard.value);
+}
+
+function cardsReorder() {
+
+}
+
+
 
 
 </script>

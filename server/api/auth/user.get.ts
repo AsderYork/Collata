@@ -16,7 +16,14 @@ const ensureAuth = (event: H3Event) => {
   }
 
   const extractedToken = extractToken(authHeaderValue)
+
+
   try {
+    const user = verify(extractedToken, SECRET);
+    const timeRemaning = user['exp'] - (Date.now() / 1000);
+    if(timeRemaning < 00)
+    console.log()
+    
     return verify(extractedToken, SECRET)
   } catch (error) {
     console.error('Login failed. Here\'s the raw error:', error)
@@ -25,6 +32,9 @@ const ensureAuth = (event: H3Event) => {
 }
 
 export default eventHandler((event) => {
+
+  console.log
+
   const user = ensureAuth(event)
   return user
 })
