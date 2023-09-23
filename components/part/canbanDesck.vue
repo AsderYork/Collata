@@ -81,7 +81,7 @@
         </client-only>
 
         <miscFormModalClean ref="elementsEditForm" :contentStyle="{height:'80vh', background:'#efefef'}">
-            <PartCardBody ref="cardbody" @requestClose="elementsEditForm.hideModal()" @save="saveCard" v-model="currentCard"></PartCardBody>
+            <PartCardBody ref="cardbody" @requestClose="elementsEditForm.hideModal()" @save="saveCard" @requestCardDelete="deleteCard" v-model="currentCard"></PartCardBody>
         </miscFormModalClean>
 
         
@@ -117,7 +117,7 @@ const props = defineProps({
     cardstacks: {type:Object},
 })
 
-const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard'])
+const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard', 'deleteCard'])
 
 const cardblocks = ref(props.cardstacks);
 
@@ -199,9 +199,10 @@ function saveCard() {
     emit('saveCard', currentCard.value);
 }
 
-function cardsReorder() {
-
+function deleteCard() {
+    emit('deleteCard', currentCard.value);
 }
+
 
 
 

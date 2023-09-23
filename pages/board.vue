@@ -6,6 +6,7 @@
     @deleteCardstack="deleteCardstack"
     @reorderCardstack="reorderCardstack"
     @saveCard = "saveCard"
+    @deleteCard = "deleteCard"
     :cardstacks="cardstacks"/>
     </div>
 </template>
@@ -54,6 +55,14 @@ async function saveCard(data) {
             body: dataToSend,
         });
     }
+    cardstackRefresh();
+}
+
+async function deleteCard(data) {
+    var data = await $fetch('/api/cards', {
+            method: 'DELETE',
+            body: {id:data.id},
+        });
     cardstackRefresh();
 }
 

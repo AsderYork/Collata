@@ -21,7 +21,7 @@ const ensureAuth = (event: H3Event) => {
   try {
     const user = verify(extractedToken, SECRET);
     const timeRemaning = user['exp'] - (Date.now() / 1000);
-        if(timeRemaning < 10) {
+    if(timeRemaning < 10) {
     console.log('time is running out on this token!')
     }
     

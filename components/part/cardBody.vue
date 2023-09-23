@@ -5,6 +5,17 @@
                 <div class="w-100 pe-1">
                     <MiscResizableScroll v-model="card.name" class="fw-bold rounded-bottom-0 rounded-end-0 px-1 my-0 card-header" ref="headerElement"></MiscResizableScroll>
                 </div>
+
+                <div class="dropdown d-flex">
+                    <div class="btn btn-sm btn-outline-secondary rounded-0 mt-n1 me-n1 border-0 px-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 27px;">
+                        <font-awesome-icon :icon="['fas', 'ellipsis-vertical']" />
+                    </div>
+                    <ul class="dropdown-menu">
+                        <li @click="deleteAskModal.showModal()"><a class="dropdown-item" href="#"><font-awesome-icon :icon="['fas', 'trash-alt']" /> Delete card</a></li>
+                    </ul>
+                </div>
+                
+                
                 <div class="btn btn-sm btn-outline-secondary rounded-start-0 rounded-bottom-0 mt-n1 me-n1 border-0 card-header-angle-btn" @click="emit('requestClose')">
                     <font-awesome-icon :icon="['fas', 'times']" />
                 </div>
@@ -23,6 +34,10 @@
             <button class="btn btn-sm btn-primary rounded-top-0 rounded rounded-end-1" @click.prevent="saveCard()">Save</button>
         </div>
 
+        <MiscFormModal ref="deleteAskModal" :title="'Delete card'" :buttons="[{text:'delete',click:() => {emit('requestCardDelete'); emit('requestClose')}, color:'danger'}]">
+            <h2>Are you shure you want to delete this card?</h2>
+        </MiscFormModal>
+
     </div>
 </template>
 
@@ -31,12 +46,13 @@
 const props = defineProps({
     modelValue: {type: Object, default: {name:'', text:''}}
 })
-const emit = defineEmits(['requestClose', 'save', 'update:modelValue'])
+const emit = defineEmits(['requestClose', 'save', 'update:modelValue', 'requestCardDelete'])
 
 
 
 const addMarkModal = ref(null)
-const headerElement =ref(null)
+const headerElement = ref(null)
+const deleteAskModal = ref(null)
 
 const card = ref(props.modelValue);
 
