@@ -9,7 +9,7 @@ export async function addCardstack(board, order, name, authorId) {
 
 export async function getCardstacks(board, withCards) {
 
-  var reqBlock = {where:{boardId:parseInt(board), trash:false}, orderBy: [{order:'asc'}]};
+  var reqBlock = {where:{boardId:parseInt(board), trash:false}, orderBy: {order:'asc'}};
   if(withCards) {
     reqBlock['include'] = {cards:{orderBy:{order:'asc'}}}
   }

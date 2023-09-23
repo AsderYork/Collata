@@ -35,7 +35,7 @@ const newBoardNameElement = ref(null);
 const newBoardName = ref(null);
 
 const AugmentedBoardsList = computed(() => {
-    return [{id:null}].concat(boardsList.value);
+    return [{id:null}].concat(boardsList.value ?? []);
 })
 
 
