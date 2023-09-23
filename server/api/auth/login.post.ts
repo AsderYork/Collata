@@ -17,7 +17,7 @@ export default eventHandler(async (event) => {
   }
 
 
-  const expiresIn = 60*10
+  const expiresIn = 60*60*24*3
   const refreshToken = Math.floor(Math.random() * (1000000000000000 - 1 + 1)) + 1
   const accessToken = sign({ ...user, scope: ['test', 'user'] }, SECRET, { expiresIn })
   refreshTokens[refreshToken] = {
