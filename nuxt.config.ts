@@ -37,7 +37,6 @@ export default defineNuxtConfig({
     '~/assets/styles/main.scss',
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
-  
   pages: true,
   build: {
     transpile: [

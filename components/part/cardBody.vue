@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-column" style="height: 80vh; padding-bottom: 2px;">
-        <div class="p-1 border-bottom">
-            <div class="d-flex border-bottom">
+        <div class="border-bottom">
+            <div class="d-flex p-1">
                 <div class="w-100 pe-1">
                     <MiscResizableScroll v-model="card.name" class="fw-bold rounded-bottom-0 rounded-end-0 px-1 my-0 card-header" ref="headerElement"></MiscResizableScroll>
                 </div>
@@ -20,33 +20,82 @@
                     <font-awesome-icon :icon="['fas', 'times']" />
                 </div>
             </div>
+        </div>
+
+        <div class="border-bottom">
             <div>
-                <div>
-                    <button tabindex="-1" class="btn btn-sm btn-outline-secondary border-0 rounded-top-0" title="Add mark" @click.prevent="addMarkModal.showModal()">
-                        <font-awesome-icon :icon="['fa', 'bookmark']" /> <font-awesome-icon :icon="['fa', 'plus']" />
-                    </button>
-                </div>
+                <button tabindex="-1" class="btn btn-sm btn-outline-secondary border-0 rounded-top-0" title="Add mark" @click.prevent="addMarkModal.showModal()">
+                    <font-awesome-icon :icon="['fa', 'bookmark']" /> <font-awesome-icon :icon="['fa', 'plus']" />
+                </button>
             </div>
         </div>
-        <AppTextEditor v-model="card.text" style="height: 100%;" class="rounded m-1"></AppTextEditor>
 
-        <div>
-            <button class="btn btn-sm btn-primary rounded-top-0 rounded rounded-end-1" @click.prevent="saveCard()">Save</button>
+        
+        <div class="overflow-auto">
+            <div class="m-1">
+                <div v-if="!textEditStarted" class="empty-text-block rounded p-2" @click="startTextEditing()" tabindex="0" @focus="startTextEditing()">Add an extended description of a task...</div>
+                <AppTextEditor v-if="textEditStarted" v-model="card.text" class="rounded" @focusout="stopTextEditing()"></AppTextEditor>
+            </div>
+
+            <div class="border-top ">
+                <div class="d-flex my-2 mx-2 border-bottom pb-1">
+                    <div class="rounded-circle profile-picture text-center d-flex justify-content-center flex-column">
+                        <div class="mb-1">A</div>
+                    </div>
+                    <div v-if="!newCommentStarted" tabindex="0" class="rounded bg-light ms-2 px-2 w-100 btn text-start text-muted" @click="startNewComment()">Write new comment...</div>
+                    <div v-else class="w-100 ms-2" @focusout="stopAddingComment()">
+                        <AppTextEditor v-model="newCommentText" class="rounded" :lockWritingMode="true" :focusOnMount="true" :readonly="!newCommentStarted"/>
+                        <div class="btn btn-sm btn-primary" @click="saveNewComment()">save</div>
+                    </div>
+                </div>
+            </div>
+
+            {{ card.cardsComments }}
+
+            <div class="d-flex flex-column">
+                <div v-for="comment in card.cardsComments">
+                    
+
+                    <div class="d-flex my-2 mx-2">
+                        <div class="rounded-circle profile-picture text-center d-flex justify-content-center flex-column">
+                            <div class="mb-1">A</div>
+                        </div>
+                        <div class="ms-2 w-100">
+                            <div>
+                                <small class="text-muted" title="edit comment"><font-awesome-icon :icon="['fas', 'pen']" /></small>
+                                <small class="text-muted ms-1" title="delete comment"><a class="text-muted" href="#" @click.prevent="deleteComment(comment.id)"><font-awesome-icon :icon="['fas', 'trash']" /></a></small>
+                                {{ comment.author.name }}
+                                <small class="text-muted ms-1" :title="regularTime(comment.createdAt)">{{ HRTime(comment.createdAt) }}</small>
+                            </div>
+                            <div class="rounded px-2 bg-light text-start pb-1">
+                                <AppTextEditor v-model="comment.text" class="rounded" :readonly="true"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
+
+
 
         <MiscFormModal ref="deleteAskModal" :title="'Delete card'" :buttons="[{text:'delete',click:() => {emit('requestCardDelete'); emit('requestClose')}, color:'danger'}]">
             <h2>Are you shure you want to delete this card?</h2>
         </MiscFormModal>
 
+
     </div>
 </template>
 
 <script setup>
+import moment from 'moment'
+
 
 const props = defineProps({
     modelValue: {type: Object, default: {name:'', text:''}}
 })
-const emit = defineEmits(['requestClose', 'save', 'update:modelValue', 'requestCardDelete'])
+const emit = defineEmits(['requestClose', 'save', 'update:modelValue', 'requestCardDelete', 'newComment', 'deleteComment'])
 
 
 
@@ -54,11 +103,33 @@ const addMarkModal = ref(null)
 const headerElement = ref(null)
 const deleteAskModal = ref(null)
 
+const editorFocused = ref(false);
+const textEditStarted = computed(() => editorFocused.value || (card.value?.text != '' && card.value?.text != null));
+
+const newCommentText = ref('')
+const newCommentStarted = ref(false);
+
+
 const card = ref(props.modelValue);
 
 watch(card, () => {
     emit('update:modelValue', card);
 })
+
+watch(() => props.modelValue, () => {
+    card.value = props.modelValue;
+})
+
+
+
+function HRTime(time) {
+    return moment(time).fromNow();
+}
+
+function regularTime(time) {
+    return moment(time);
+}
+
 
 
 function open() {
@@ -68,14 +139,50 @@ function open() {
 
 defineExpose({open});
 
+function startNewComment() {
+    newCommentStarted.value = true;
+}
+
+function stopAddingComment() {
+    if(newCommentText.value == '') {
+        newCommentStarted.value = false;
+    }
+}
+
+function startTextEditing() {
+    editorFocused.value = true;
+}
+
+function stopTextEditing() {
+    editorFocused.value = false;
+}
+
+function saveNewComment() {
+    emit('newComment', newCommentText.value);
+    newCommentText.value = '';
+}
+
+function deleteComment(id) {
+    emit('deleteComment', id);
+}
+
+
 onMounted(() => {
-    headerElement.value.focus();
+
+    if(card.value && card.value?.text != null) {
+        nextTick(() => {
+            startNewComment();
+        })
+    } else {
+        headerElement.value.focus();
+    }
+
 })
 
-function saveCard() {
+
+onBeforeUnmount(() => {
     emit('save');
-    emit('requestClose');
-}
+})
 
 
 
@@ -92,6 +199,23 @@ function saveCard() {
 .card-header-angle-btn {
     border-top-right-radius: 7px;
 }
+
+.profile-picture {
+    width: 40px;
+    height: 40px;
+    background: rebeccapurple;
+}
+
+.empty-text-block {
+    cursor: pointer;
+    background-color: #091e420f;
+}
+
+.empty-text-block:hover {
+    background-color: #05102234;
+}
+
+
 
 
 </style>

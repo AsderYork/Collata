@@ -21,6 +21,7 @@ model Users {
   boards                Boards[]
   cardstacks            Cardstacks[]
   cards                 Cards[]
+  CardsComments         CardsComments[]
 }
 
 model Boards {
@@ -60,4 +61,18 @@ model Cards {
   trash                 Boolean     @default(false)
   cardstacks            Cardstacks  @relation(fields: [cardstackId], references: [id])
   cardstackId           Int
+  cardsComments         CardsComments[]
+}
+
+model CardsComments {
+  id                    Int         @id @default(autoincrement())
+  card                  Cards @relation(fields: [cardId], references: [id])
+  cardId                Int
+  text                  String
+  author                Users       @relation(fields: [authorId], references: [id])
+  authorId              Int
+  createdAt             DateTime    @default(now()) 
+  trash                 Boolean     @default(false)
+
+  
 }

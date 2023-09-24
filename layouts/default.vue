@@ -12,7 +12,7 @@ html, body {
             <div class="mx-2">
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
                     <div class="d-flex">
-                        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                        <a href="/" class="d-flex align-items-center mb-lg-0 text-white text-decoration-none">
                         <div class="btn bg-light px-1 py-0">
                             <img src="/favicon.ico" style="height: 30px;">
                         </div>
@@ -22,7 +22,7 @@ html, body {
                    
                     <div class="d-flex">
 
-                        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                        <form class="col-12 col-lg-auto mb-lg-0 me-lg-3 me-1">
                             <input type="search" class="form-control form-control-sm form-control-dark"
                                 placeholder="Search..." aria-label="Search">
                         </form>

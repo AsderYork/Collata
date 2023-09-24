@@ -5,8 +5,10 @@
     @updateCardstack="cardStackEnshure" 
     @deleteCardstack="deleteCardstack"
     @reorderCardstack="reorderCardstack"
-    @saveCard = "saveCard"
-    @deleteCard = "deleteCard"
+    @saveCard="saveCard"
+    @deleteCard="deleteCard"
+    @newComment="newComment"
+    @deleteComment="deleteComment"
     :cardstacks="cardstacks"/>
     </div>
 </template>
@@ -65,6 +67,24 @@ async function deleteCard(data) {
         });
     cardstackRefresh();
 }
+
+async function newComment(data) {
+    var data = await $fetch('/api/comments', {
+            method: 'post',
+            body: data,
+        });
+    cardstackRefresh();
+}
+
+async function deleteComment(data) {
+    var data = await $fetch('/api/comments', {
+            method: 'DELETE',
+            body: data,
+        });
+    cardstackRefresh();
+}
+
+
 
 
 

@@ -1,0 +1,11 @@
+-- CreateTable
+CREATE TABLE "CardsComments" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "cardId" INTEGER NOT NULL,
+    "text" TEXT NOT NULL,
+    "authorId" INTEGER NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "trash" BOOLEAN NOT NULL DEFAULT false,
+    CONSTRAINT "CardsComments_cardId_fkey" FOREIGN KEY ("cardId") REFERENCES "Cards" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "CardsComments_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "Users" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);

@@ -39,7 +39,7 @@
     <div class="worktable p-2">
 
         <client-only>
-            <draggable v-model="cardblocks" item-key="id" group="elements" class="active-cards" @end="cardblockReorder">
+            <draggable v-model="cardblocks" item-key="id" group="elements" class="active-cards d-flex" @end="cardblockReorder">
                 <template #item="{element:cardblock}">
                     <div class="cardstack card">
                         <div class="cardstack-header py-1">
@@ -62,8 +62,9 @@
                         <div class="d-flex flex-column">
                             <draggable v-model="cardblock.cards" item-key="id" group="cards" @end="cardblockReorder">
                                 <template #item="{element:card}">
-                                    <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="showCard(card, cardblock)">
+                                    <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="currentCard = card; showCard(card, cardblock)">
                                         <b>{{card.name}}</b>
+                                        {{ card.cardsComments }}
                                     </div>
                                 </template>
                             </draggable>
@@ -73,19 +74,12 @@
 
 
                         <div class="cardstack-end px-1 py-1">
-                            <a href="#" class="btn btn-outline-secondary p-1" @click="showCard({}, cardblock)"><font-awesome-icon :icon="['fas', 'plus']"/> New Card</a>
+                            <a href="#" class="btn btn-outline-secondary p-1" @click="showCard(null, cardblock)"><font-awesome-icon :icon="['fas', 'plus']"/> New Card</a>
                         </div>
                     </div>
                 </template>
             </draggable>
         </client-only>
-
-        <miscFormModalClean ref="elementsEditForm" :contentStyle="{height:'80vh', background:'#efefef'}">
-            <PartCardBody ref="cardbody" @requestClose="elementsEditForm.hideModal()" @save="saveCard" @requestCardDelete="deleteCard" v-model="currentCard"></PartCardBody>
-        </miscFormModalClean>
-
-        
-
         
 
         <div class="cardstack card cardstack-new bg-secondary" >
@@ -102,6 +96,21 @@
                 </div>
             </div>
         </div>
+
+        
+        <miscFormModalClean ref="elementsEditForm" :contentStyle="{height:'80vh', background:'#efefef'}">
+            <PartCardBody ref="cardbody" 
+            @requestClose="elementsEditForm.hideModal()" 
+            @save="saveCard" 
+            @requestCardDelete="deleteCard"
+            @newComment="newComment"
+            @deleteComment="deleteComment"
+            v-model="currentCard"></PartCardBody>
+        </miscFormModalClean>
+
+        <div class="text-primary">{{ cardblocks.map(x => x.cards.map(y => y.cardsComments)) }}</div>
+        <div class="text-danger">{{ currentCard.cardsComments }}</div>
+
     </div>
 
 
@@ -110,14 +119,12 @@
 </template>
 
 <script setup>
-import draggableComponent from 'vuedraggable';
-
 
 const props = defineProps({
     cardstacks: {type:Object},
 })
 
-const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard', 'deleteCard'])
+const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard', 'deleteCard', 'newComment', 'deleteComment'])
 
 const cardblocks = ref(props.cardstacks);
 
@@ -176,8 +183,21 @@ function updateCardstack(cardstack) {
     emit('updateCardstack', cardstack);
 }
 
+function newComment(comment) {
+    emit('newComment', {card:currentCard.value?.id, text:comment});
+}
+
+function deleteComment(id) {
+    emit('deleteComment', {id:id});
+}
+
+
+
 function showCard(card, cardblock) {
-    currentCard.value = Object.assign(card ?? {}, {cardstack: cardblock});
+    //debugger;
+    //currentCard.value = card ?? {};
+    //currentCard.value.cardstack = cardblock;
+
     elementsEditForm.value.showModal()
 }
 

@@ -1,6 +1,6 @@
 <template>
-    <div id="text-editor" class="d-flex flex-column border-0 tiptaptexteditor" :class="{'tiptaptexteditor-presentmode':presentMode}" style="overflow: hidden;" @focusout="onFocusOut" ref="editorref">
-      <div class="toolbar" v-if="editor && !presentMode">
+    <div id="text-editor" class="d-flex flex-column border-0 tiptaptexteditor" :class="{'tiptaptexteditor-presentmode':writingModeState}" style="overflow: hidden;" @focusout="onFocusOut" ref="editorref">
+      <div class="toolbar" v-if="editor && !writingModeState">
         <button
           v-for="({ slug, option, active, icon }, index) in textActions"
           class="btn btn-sm m-0 rounded-0"
@@ -15,7 +15,6 @@
 
       <editor-content :editor="editor" v-if="editorVisible" tabindex="1" style="overflow-y: auto; overflow-x: hidden; height: 100%;" @click="makeEditable"/>
       <textarea class="w-100" v-model="innerValue" @keyup="rawTextClick" v-else style="height: 100%;"></textarea>
-
     </div>
   </template>
   
@@ -43,6 +42,18 @@
         type: Number,
         default: null,
       },
+      lockWritingMode: {
+        type: Boolean,
+        default: false
+      },
+      focusOnMount: {
+        type: Boolean,
+        default: false
+      },
+      readonly: {
+        type: Boolean,
+        default: false
+      }
     },
     data() {
       return {
@@ -106,6 +117,9 @@
   
         return '';
       },
+      writingModeState() {
+        return (this.presentMode && !this.lockWritingMode) || this.readonly;
+      }
     },
     watch: {
       modelValue(value) {
@@ -113,7 +127,8 @@
         this.editor.commands.setContent(this.modelValue, false);
         this.innerValue = this.editor.storage.markdown.getMarkdown();
       },
-      presentMode(value) {
+      writingModeState(value) {
+          console.log('chage state ' + value)
           this.editor.setOptions({editable: !value});        
       }
     },
@@ -198,8 +213,12 @@
         },
       });
 
-      if(this.presentMode == true) {
-          this.editor.setOptions({editable: false});
+        this.editor.setOptions({editable: !this.writingModeState});
+
+      if(this.focusOnMount) {
+        nextTick(() => {
+          this.editor.view.dom.focus()
+        })
       }
 
     },

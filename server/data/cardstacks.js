@@ -11,7 +11,18 @@ export async function getCardstacks(board, withCards) {
 
   var reqBlock = {where:{boardId:parseInt(board), trash:false}, orderBy: {order:'asc'}};
   if(withCards) {
-    reqBlock['include'] = {cards:{orderBy:{order:'asc'}, where:{trash:false}}}
+    reqBlock['include'] = {
+      cards:{
+        orderBy:{order:'asc'}, 
+        where:{trash:false}, 
+        include:{
+          cardsComments:{
+            include:{author:true},
+            where:{trash:false}
+          }
+        }
+      }
+    }
   }
 
   var data = await prisma.Cardstacks.findMany(reqBlock);
