@@ -62,9 +62,8 @@
                         <div class="d-flex flex-column">
                             <draggable v-model="cardblock.cards" item-key="id" group="cards" @end="cardblockReorder">
                                 <template #item="{element:card}">
-                                    <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="currentCard = card; showCard(card, cardblock)">
+                                    <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="showCard(toRef(card), cardblock)">
                                         <b>{{card.name}}</b>
-                                        {{ card.cardsComments }}
                                     </div>
                                 </template>
                             </draggable>
@@ -98,7 +97,7 @@
         </div>
 
         
-        <miscFormModalClean ref="elementsEditForm" :contentStyle="{height:'80vh', background:'#efefef'}">
+        <miscFormModalClean ref="elementsEditForm" :contentStyle="{height:'80vh', background:'#efefef'}" @onClose="saveCard">
             <PartCardBody ref="cardbody" 
             @requestClose="elementsEditForm.hideModal()" 
             @save="saveCard" 
@@ -106,10 +105,8 @@
             @newComment="newComment"
             @deleteComment="deleteComment"
             v-model="currentCard"></PartCardBody>
+            QQQQQ:{{ currentCard?.cardsComments }}
         </miscFormModalClean>
-
-        <div class="text-primary">{{ cardblocks.map(x => x.cards.map(y => y.cardsComments)) }}</div>
-        <div class="text-danger">{{ currentCard.cardsComments }}</div>
 
     </div>
 
@@ -127,9 +124,15 @@ const props = defineProps({
 const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard', 'deleteCard', 'newComment', 'deleteComment'])
 
 const cardblocks = ref(props.cardstacks);
+const allCards = computed(() => {
+    return [].concat(...cardblocks.value.map(x => x.cards.map(c => Object.assign(c, {cardstack: x}))));
+})
 
 watch(() => props.cardstacks, () => {
     cardblocks.value = props.cardstacks;
+    if(currentCard.value && currentCard.value.id) {
+        currentCard.value = allCards.value?.find(x => x.id === currentCard.value.id);
+    }
 })
 
 const newCardBlock = ref({});
@@ -140,7 +143,9 @@ const CardBlockPlanInputRef = ref(null);
 const elementsEditForm = ref(null);
 const cardbody = ref(null);
 
-const currentCard = ref({});
+
+
+var currentCard = ref(null);
 
 
 function addNewCardblockPlan() {
@@ -194,10 +199,8 @@ function deleteComment(id) {
 
 
 function showCard(card, cardblock) {
-    //debugger;
-    //currentCard.value = card ?? {};
-    //currentCard.value.cardstack = cardblock;
-
+    currentCard = card ?? ref({});
+    currentCard.value.cardstack = cardblock;
     elementsEditForm.value.showModal()
 }
 

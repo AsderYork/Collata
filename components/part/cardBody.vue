@@ -37,44 +37,39 @@
                 <AppTextEditor v-if="textEditStarted" v-model="card.text" class="rounded" @focusout="stopTextEditing()"></AppTextEditor>
             </div>
 
-            <div class="border-top ">
-                <div class="d-flex my-2 mx-2 border-bottom pb-1">
-                    <div class="rounded-circle profile-picture text-center d-flex justify-content-center flex-column">
-                        <div class="mb-1">A</div>
-                    </div>
-                    <div v-if="!newCommentStarted" tabindex="0" class="rounded bg-light ms-2 px-2 w-100 btn text-start text-muted" @click="startNewComment()">Write new comment...</div>
-                    <div v-else class="w-100 ms-2" @focusout="stopAddingComment()">
-                        <AppTextEditor v-model="newCommentText" class="rounded" :lockWritingMode="true" :focusOnMount="true" :readonly="!newCommentStarted"/>
-                        <div class="btn btn-sm btn-primary" @click="saveNewComment()">save</div>
-                    </div>
-                </div>
-            </div>
-
-            {{ card.cardsComments }}
-
-            <div class="d-flex flex-column">
-                <div v-for="comment in card.cardsComments">
-                    
-
-                    <div class="d-flex my-2 mx-2">
+            <div v-if="showComments">
+                <div class="border-top ">
+                    <div class="d-flex my-2 mx-2 border-bottom pb-1">
                         <div class="rounded-circle profile-picture text-center d-flex justify-content-center flex-column">
                             <div class="mb-1">A</div>
                         </div>
-                        <div class="ms-2 w-100">
-                            <div>
-                                <small class="text-muted" title="edit comment"><font-awesome-icon :icon="['fas', 'pen']" /></small>
-                                <small class="text-muted ms-1" title="delete comment"><a class="text-muted" href="#" @click.prevent="deleteComment(comment.id)"><font-awesome-icon :icon="['fas', 'trash']" /></a></small>
-                                {{ comment.author.name }}
-                                <small class="text-muted ms-1" :title="regularTime(comment.createdAt)">{{ HRTime(comment.createdAt) }}</small>
+                        <div v-if="!newCommentStarted" tabindex="0" class="rounded bg-light ms-2 px-2 w-100 btn text-start text-muted" @click="startNewComment()">Write new comment...</div>
+                        <div v-else class="w-100 ms-2" @focusout="stopAddingComment()">
+                            <AppTextEditor v-model="newCommentText" class="rounded" :lockWritingMode="true" :focusOnMount="true" :readonly="!newCommentStarted"/>
+                            <div class="btn btn-sm btn-primary" @click="saveNewComment()">save</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column">
+                    <div v-for="comment in card.cardsComments">
+                        <div class="d-flex my-2 mx-2">
+                            <div class="rounded-circle profile-picture text-center d-flex justify-content-center flex-column">
+                                <div class="mb-1">A</div>
                             </div>
-                            <div class="rounded px-2 bg-light text-start pb-1">
-                                <AppTextEditor v-model="comment.text" class="rounded" :readonly="true"/>
+                            <div class="ms-2 w-100">
+                                <div>
+                                    <small class="text-muted" title="edit comment"><font-awesome-icon :icon="['fas', 'pen']" /></small>
+                                    <small class="text-muted ms-1" title="delete comment"><a class="text-muted" href="#" @click.prevent="deleteComment(comment.id)"><font-awesome-icon :icon="['fas', 'trash']" /></a></small>
+                                    {{ comment.author.name }}
+                                    <small class="text-muted ms-1" :title="regularTime(comment.createdAt)">{{ HRTime(comment.createdAt) }}</small>
+                                </div>
+                                <div class="rounded px-2 bg-light text-start pb-1">
+                                    <AppTextEditor v-model="comment.text" class="rounded" :readonly="true"/>
+                                </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
 
@@ -111,6 +106,9 @@ const newCommentStarted = ref(false);
 
 
 const card = ref(props.modelValue);
+
+const showComments = computed(() => props.modelValue?.id);
+
 
 watch(card, () => {
     emit('update:modelValue', card);
@@ -178,13 +176,6 @@ onMounted(() => {
     }
 
 })
-
-
-onBeforeUnmount(() => {
-    emit('save');
-})
-
-
 
 </script>
 <style>
