@@ -1,0 +1,16 @@
+services:
+  collata:
+    container_name: collata
+    build:
+      dockerfile: ./dockerfile
+      no_cache: true
+      tags:
+        - "collata:latest"
+    ports:
+      - '${PORT}:3000'
+    volumes:
+     - collata-data-uploads:/app/public/uploads
+     - collata-data-db:/app/database
+volumes:
+  collata-data-uploads:
+  collata-data-db:

@@ -46,4 +46,7 @@ export default defineNuxtConfig({
         'jsonwebtoken',
     ]
   },
+  runtimeConfig: {
+    secret: 'define-secret-in-dotenv-file'
+  }
 })

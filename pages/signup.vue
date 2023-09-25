@@ -113,7 +113,7 @@ async function attemptSignUp() {
 
     try {
         const signInObj = {login:login.value, password:password.value};
-        var res = await signUp(signInObj, {callbackUrl:'/'});
+        var res = await signUp(signInObj, {callbackUrl:'/boards'});
     } catch(exception) {
         lastError.value = exception.statusMessage; 
     }

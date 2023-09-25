@@ -1,6 +1,5 @@
 import { H3Event } from 'h3'
 import { verify } from 'jsonwebtoken'
-import { SECRET } from './login.post'
 
 const TOKEN_TYPE = 'Bearer'
 
@@ -19,7 +18,7 @@ const ensureAuth = (event: H3Event) => {
 
 
   try {
-    const user = verify(extractedToken, SECRET);
+    const user = verify(extractedToken, useRuntimeConfig().secret);
     const timeRemaning = user['exp'] - (Date.now() / 1000);
     if(timeRemaning < 10) {
     console.log('time is running out on this token!')
