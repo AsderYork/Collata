@@ -3,7 +3,6 @@ import { sign } from 'jsonwebtoken'
 import { addUser, checkUser, getUsersByLogin } from '../../data/users'
 
 const refreshTokens: Record<number, Record<string, any>> = {}
-export const SECRET = useRuntimeConfig().secret;
 
 export default eventHandler(async (event) => {
   const result = z.object({ login: z.string().min(1), password: z.string().min(1) }).safeParse(await readBody(event))
@@ -21,11 +20,10 @@ export default eventHandler(async (event) => {
 
   const expiresIn = 60*10
   const refreshToken = Math.floor(Math.random() * (1000000000000000 - 1 + 1)) + 1
-  const accessToken = sign({ ...user, scope: ['test', 'user'] }, SECRET, { expiresIn })
+  const accessToken = sign({ ...user, scope: ['test', 'user'] },  useRuntimeConfig().secret, { expiresIn })
   refreshTokens[refreshToken] = {
     accessToken,
     user,
-    secret:SECRET
   }
 
   return {

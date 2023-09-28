@@ -144,7 +144,7 @@ const elementsEditForm = ref(null);
 const cardbody = ref(null);
 
 
-
+var currentCardId = ref(null);
 var currentCard = ref(null);
 
 

@@ -24,7 +24,7 @@ const ensureAuth = (event: H3Event) => {
     console.log('time is running out on this token!')
     }
     
-    return verify(extractedToken, SECRET)
+    return verify(extractedToken, useRuntimeConfig().secret)
   } catch (error) {
     console.error('Login failed. Here\'s the raw error:', error)
     throw createError({ statusCode: 403, statusMessage: 'You must be logged in to use this endpoint' })
@@ -32,9 +32,6 @@ const ensureAuth = (event: H3Event) => {
 }
 
 export default eventHandler((event) => {
-
-  console.log
-
   const user = ensureAuth(event)
   return user
 })
