@@ -9,6 +9,7 @@
     @deleteCard="deleteCard"
     @newComment="newComment"
     @deleteComment="deleteComment"
+    :newCardIdLink = "newCardIdLink"
     :cardstacks="cardstacks"/>
     </div>
 </template>
@@ -17,6 +18,8 @@
 
 const route = useRoute();
 const boardId = route?.query?.id;
+
+const newCardIdLink = ref(null);
 
 
 async function cardStackEnshure(data) {
@@ -51,12 +54,24 @@ async function reorderCardstack(data) {
 
 async function saveCard(data) {
     if(data.name != null) {
-    var dataToSend = Object.assign({}, data, {cardstack:data.cardstack.id});
-    var data = await $fetch('/api/cards', {
-            method: 'POST',
-            body: dataToSend,
-        });
-    }
+        var newCard = false;
+        if(data.tmpId) {
+            newCard = data.tmpId;
+            delete data.tmpId;
+        }
+
+        var dataToSend = Object.assign({}, data, {cardstack:data.cardstack.id});
+        var data = await $fetch('/api/cards', {
+                method: 'POST',
+                body: dataToSend,
+            });
+
+        if(newCard) {
+            newCardIdLink.value = {id:data.id, tmpId:newCard};
+        }
+
+    }      
+
     cardstackRefresh();
 }
 

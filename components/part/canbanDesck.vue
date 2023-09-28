@@ -37,7 +37,6 @@
 
 <template>
     <div class="worktable p-2">
-
         <client-only>
             <draggable v-model="cardblocks" item-key="id" group="elements" class="active-cards d-flex" @end="cardblockReorder">
                 <template #item="{element:cardblock}">
@@ -62,7 +61,7 @@
                         <div class="d-flex flex-column">
                             <draggable v-model="cardblock.cards" item-key="id" group="cards" @end="cardblockReorder">
                                 <template #item="{element:card}">
-                                    <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="showCard(toRef(card), cardblock)">
+                                    <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="showCard(card, cardblock)">
                                         <b>{{card.name}}</b>
                                     </div>
                                 </template>
@@ -116,9 +115,11 @@
 </template>
 
 <script setup>
+import { v4 as uuidv4 } from 'uuid';
 
 const props = defineProps({
     cardstacks: {type:Object},
+    newCardIdLink: {type:Object},//When we create new card, it's id is unknown. To recognize it after update, user must provide {id, tmpId} object, linking new card to it's new id
 })
 
 const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard', 'deleteCard', 'newComment', 'deleteComment'])
@@ -128,25 +129,39 @@ const allCards = computed(() => {
     return [].concat(...cardblocks.value.map(x => x.cards.map(c => Object.assign(c, {cardstack: x}))));
 })
 
-watch(() => props.cardstacks, () => {
-    cardblocks.value = props.cardstacks;
-    if(currentCard.value && currentCard.value.id) {
-        currentCard.value = allCards.value?.find(x => x.id === currentCard.value.id);
-    }
-})
-
 const newCardBlock = ref({});
-
-
 
 const CardBlockPlanInputRef = ref(null);
 const elementsEditForm = ref(null);
 const cardbody = ref(null);
 
 
-var currentCardId = ref(null);
-var currentCard = ref(null);
+//After we make a new card, we must change our state to show, that this new card is now a regular card with id stored in newCardIdLink
+watch(() => props.newCardIdLink, () => {
+    if(props.newCardIdLink && props.newCardIdLink.id && newCard.value !== null) {
+        currentCardId.value = props.newCardIdLink.id;
+        newCard.value = null;
+    }
+})
 
+watch(() => props.cardstacks, () => {cardblocks.value = props.cardstacks;})
+
+
+var currentCardId = ref(null);
+var newCard = ref(null);
+var currentCard = computed(() => {
+    return newCard.value ?? allCards.value.find(x => x.id === currentCardId.value)
+});
+
+
+function showCard(card, cardstack) {
+    if(card === null) {
+        newCard.value = {cardstack:cardstack, tmpId: uuidv4()};
+    } else {
+        currentCardId.value = card.id;
+    }
+    elementsEditForm.value.showModal()
+}
 
 function addNewCardblockPlan() {
     newCardBlock.value.active = true;
@@ -196,14 +211,6 @@ function deleteComment(id) {
     emit('deleteComment', {id:id});
 }
 
-
-
-function showCard(card, cardblock) {
-    currentCard = card ?? ref({});
-    currentCard.value.cardstack = cardblock;
-    elementsEditForm.value.showModal()
-}
-
 function cardblockReorder() {
 
     var toSend = [];
@@ -218,7 +225,7 @@ function cardblockReorder() {
     emit('reorderCardstack', toSend);
 }
 
-function saveCard() {
+async function saveCard() {
     emit('saveCard', currentCard.value);
 }
 
