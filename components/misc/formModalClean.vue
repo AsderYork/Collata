@@ -20,11 +20,7 @@ const emit = defineEmits(['onClose', 'onOpen']);
 const passedEventHandle = ref(null);
 
 
-const result = ref({});
 const isModalShown = ref(false);
-const modalDisplayProp = computed(() => {return isModalShown.value ? 'block' : 'none';})
-const modalTitle = computed(() => {return props.title ?? 'default modal title';})
-
 const props = defineProps({
     'shown': Boolean,
     'fields': Object,

@@ -11,7 +11,6 @@ export default eventHandler(async (event) => {
     throw createError({ statusCode: 403, statusMessage: 'User login/password pair invalid' })
   }
 
-  console.log(useRuntimeConfig().secret);
   var user = await checkUser(result.data.login, result.data.password);
   if (user === null) {
     throw createError({ statusCode: 403, statusMessage: 'Wrong login/password ' + useRuntimeConfig().secret })

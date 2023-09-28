@@ -1,14 +1,16 @@
 <template>
     <div>
     <PartCanbanDesck 
-    @newCardstack="cardStackEnshure" 
-    @updateCardstack="cardStackEnshure" 
-    @deleteCardstack="deleteCardstack"
-    @reorderCardstack="reorderCardstack"
+    @newCardstack="x => passEvent(x, 'cardstacks', 'post')" 
+    @updateCardstack="x => passEvent(x, 'cardstacks', 'post')" 
+    @deleteCardstack="x => passEvent(x, 'cardstacks', 'post')"
+    @reorderCardstack="x => passEvent(x, 'cardstacks/order', 'post')"
     @saveCard="saveCard"
-    @deleteCard="deleteCard"
-    @newComment="newComment"
-    @deleteComment="deleteComment"
+    @deleteCard="x => passEvent(x, 'cards', 'delete')"
+    @newComment="x => passEvent(x, 'comments', 'post')"
+    @deleteComment="x => passEvent(x, 'comments', 'delete')"
+    :boardId="boardId"
+    :newCardIdLink = "newCardIdLink"
     :cardstacks="cardstacks"/>
     </div>
 </template>
@@ -16,79 +18,45 @@
 <script setup>
 
 const route = useRoute();
-const boardId = route?.query?.id;
+const boardId = parseInt(route?.query?.id);
 
+const newCardIdLink = ref(null);
 
-async function cardStackEnshure(data) {
-
-    var dataToSend = Object.assign({}, data, {board:boardId});
-
-    var data = await $fetch('/api/cardstacks', {
-            method: 'POST',
+async function passEvent(dataToSend, endpoint, method = 'post') {
+    var data = await $fetch(`/api/${endpoint}`, {
+            method: method,
             body: dataToSend,
         });
+
+        if(endpoint !== 'comments') {
+            cardstackRefresh();
+        }
         
-    cardstackRefresh();
-}
-
-async function deleteCardstack(data) {
-    var data = await $fetch('/api/cardstacks', {
-            method: 'DELETE',
-            body: data,
-        });
-    cardstackRefresh();
-
-}
-
-async function reorderCardstack(data) {
-
-    var data = await $fetch('/api/cardstacks/order', {
-            method: 'POST',
-            body: {cardstacks:data},
-        });
-    cardstackRefresh();
+    return data;
 }
 
 async function saveCard(data) {
     if(data.name != null) {
-    var dataToSend = Object.assign({}, data, {cardstack:data.cardstack.id});
-    var data = await $fetch('/api/cards', {
-            method: 'POST',
-            body: dataToSend,
-        });
-    }
+        var newCard = false;
+        if(data.tmpId) {
+            newCard = data.tmpId;
+            delete data.tmpId;
+        }
+
+        var dataToSend = Object.assign({}, data, {cardstack:data.cardstack.id});
+        var data = await $fetch('/api/cards', {
+                method: 'POST',
+                body: dataToSend,
+            });
+
+        if(newCard) {
+            newCardIdLink.value = {id:data.id, tmpId:newCard};
+        }
+
+    }      
+
     cardstackRefresh();
 }
-
-async function deleteCard(data) {
-    var data = await $fetch('/api/cards', {
-            method: 'DELETE',
-            body: {id:data.id},
-        });
-    cardstackRefresh();
-}
-
-async function newComment(data) {
-    var data = await $fetch('/api/comments', {
-            method: 'post',
-            body: data,
-        });
-    cardstackRefresh();
-}
-
-async function deleteComment(data) {
-    var data = await $fetch('/api/comments', {
-            method: 'DELETE',
-            body: data,
-        });
-    cardstackRefresh();
-}
-
-
-
-
-
-
 
 const {data:cardstacks, error:cardstackError, refresh:cardstackRefresh} = await useFetch(`/api/cardstacks?board=${boardId}`);
 

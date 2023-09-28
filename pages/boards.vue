@@ -62,7 +62,6 @@ async function submitNewBoard() {
             method: 'POST',
             body: {name:newBoardName.value}
         } );
-        console.log(data);
     }
 
 }
@@ -106,8 +105,6 @@ const {data:boardsList} = await useFetch('/api/boards');
     background: #26272b;
     border-color: #9580b26e!important;
 }
-
-
 
 </style>
 

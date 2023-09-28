@@ -37,7 +37,6 @@
 
 <template>
     <div class="worktable p-2">
-
         <client-only>
             <draggable v-model="cardblocks" item-key="id" group="elements" class="active-cards d-flex" @end="cardblockReorder">
                 <template #item="{element:cardblock}">
@@ -62,7 +61,7 @@
                         <div class="d-flex flex-column">
                             <draggable v-model="cardblock.cards" item-key="id" group="cards" @end="cardblockReorder">
                                 <template #item="{element:card}">
-                                    <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="showCard(toRef(card), cardblock)">
+                                    <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="showCard(card, cardblock)">
                                         <b>{{card.name}}</b>
                                     </div>
                                 </template>
@@ -97,15 +96,14 @@
         </div>
 
         
-        <miscFormModalClean ref="elementsEditForm" :contentStyle="{height:'80vh', background:'#efefef'}" @onClose="saveCard">
-            <PartCardBody ref="cardbody" 
+        <miscFormModalClean ref="elementsEditForm" :contentStyle="{height:'80vh', background:'#efefef'}" @onClose="hideCurrentCard">
+            <PartCardBody
             @requestClose="elementsEditForm.hideModal()" 
             @save="saveCard" 
             @requestCardDelete="deleteCard"
             @newComment="newComment"
             @deleteComment="deleteComment"
-            v-model="currentCard"></PartCardBody>
-            QQQQQ:{{ currentCard?.cardsComments }}
+            v-model="currentCard"/>
         </miscFormModalClean>
 
     </div>
@@ -116,36 +114,59 @@
 </template>
 
 <script setup>
+import { v4 as uuidv4 } from 'uuid';
 
 const props = defineProps({
+    boardId: {type:Number},
     cardstacks: {type:Object},
+    newCardIdLink: {type:Object},//When we create new card, it's id is unknown. To recognize it after update, user must provide {id, tmpId} object, linking new card to it's new id
 })
 
 const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard', 'deleteCard', 'newComment', 'deleteComment'])
 
 const cardblocks = ref(props.cardstacks);
+const newCardBlock = ref({});
+
+const CardBlockPlanInputRef = ref(null);
+const elementsEditForm = ref(null);
+
+//After we make a new card, we must change our state to show, that this new card is now a regular card with id stored in newCardIdLink
+watch(() => props.newCardIdLink, () => {
+    if(props.newCardIdLink && props.newCardIdLink.id && newCard.value !== null) {
+        currentCardId.value = props.newCardIdLink.id;
+        newCard.value = null;
+    }
+})
+
+watch(() => props.cardstacks, () => {cardblocks.value = props.cardstacks;})
+
+
 const allCards = computed(() => {
     return [].concat(...cardblocks.value.map(x => x.cards.map(c => Object.assign(c, {cardstack: x}))));
 })
 
-watch(() => props.cardstacks, () => {
-    cardblocks.value = props.cardstacks;
-    if(currentCard.value && currentCard.value.id) {
-        currentCard.value = allCards.value?.find(x => x.id === currentCard.value.id);
-    }
-})
-
-const newCardBlock = ref({});
-
-
-
-const CardBlockPlanInputRef = ref(null);
-const elementsEditForm = ref(null);
-const cardbody = ref(null);
-
 
 var currentCardId = ref(null);
-var currentCard = ref(null);
+var newCard = ref(null);
+var currentCard = computed(() => newCard.value ?? allCards.value.find(x => x.id === currentCardId.value));
+
+watch(currentCardId, () => {console.log('current card id changed:' + currentCardId.value)});
+watch(currentCard, () => {console.log('current card changed:' + currentCard.value?.name + '; Proper:' + allCards.value.find(x => x.id === currentCardId.value)?.name)});
+
+
+function showCard(card, cardstack) {
+    if(card === null) {
+        newCard.value = {cardstack:cardstack, tmpId: uuidv4()};
+    } else {
+        currentCardId.value = card.id;
+    }
+    elementsEditForm.value.showModal()
+}
+
+function hideCurrentCard() {
+    saveCard();
+    currentCardId.value = null;
+}
 
 
 function addNewCardblockPlan() {
@@ -165,10 +186,11 @@ function addNewCardblock() {
         var newCardstack = {
             name:CardBlockPlanInputRef.value.value,
             order:cardblocks.value.length,
+            board:props.boardId
         };
 
         emit('newCardstack', newCardstack);
-        cardblocks.value.push(newCardstack);
+        //cardblocks.value.push(newCardstack);
     }
     CardBlockPlanInputRef.value.value = '';
 
@@ -196,14 +218,6 @@ function deleteComment(id) {
     emit('deleteComment', {id:id});
 }
 
-
-
-function showCard(card, cardblock) {
-    currentCard = card ?? ref({});
-    currentCard.value.cardstack = cardblock;
-    elementsEditForm.value.showModal()
-}
-
 function cardblockReorder() {
 
     var toSend = [];
@@ -215,18 +229,16 @@ function cardblockReorder() {
             toSend[i].cards.push({id:cardblocks.value[i].cards[j].id, order: cardblocks.value[i].cards[j].order});
         }
     }
-    emit('reorderCardstack', toSend);
+    emit('reorderCardstack', {'cardstacks': toSend});
 }
 
-function saveCard() {
+async function saveCard() {
     emit('saveCard', currentCard.value);
 }
 
 function deleteCard() {
-    emit('deleteCard', currentCard.value);
+    emit('deleteCard', {id:currentCard.value.id});
 }
-
-
 
 
 

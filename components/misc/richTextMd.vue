@@ -20,9 +20,6 @@ const { $mdRenderer } = useNuxtApp()
 
     function processInput(event) {
         var q = editorElement.value.innerText.replace(/\u00a0/g, " ");
-
-        console.log(q);
-
         value.value = $mdRenderer.render(q)
     }
 
