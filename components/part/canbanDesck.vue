@@ -62,6 +62,7 @@
                             <draggable v-model="cardblock.cards" item-key="id" group="cards" @end="cardblockReorder">
                                 <template #item="{element:card}">
                                     <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="showCard(card, cardblock)">
+                                    <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="showCard(card, cardblock)">
                                         <b>{{card.name}}</b>
                                     </div>
                                 </template>
@@ -119,6 +120,7 @@ import { v4 as uuidv4 } from 'uuid';
 const props = defineProps({
     boardId: {type:Number},
     cardstacks: {type:Object},
+    newCardIdLink: {type:Object},//When we create new card, it's id is unknown. To recognize it after update, user must provide {id, tmpId} object, linking new card to it's new id
     newCardIdLink: {type:Object},//When we create new card, it's id is unknown. To recognize it after update, user must provide {id, tmpId} object, linking new card to it's new id
 })
 
@@ -232,6 +234,7 @@ function cardblockReorder() {
     emit('reorderCardstack', {'cardstacks': toSend});
 }
 
+async function saveCard() {
 async function saveCard() {
     emit('saveCard', currentCard.value);
 }
