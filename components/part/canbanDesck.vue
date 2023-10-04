@@ -220,8 +220,6 @@ function editComment(data) {
     emit('editComment', data);
 }
 
-
-
 function cardblockReorder() {
 
     var toSend = [];
@@ -243,6 +241,14 @@ async function saveCard() {
 function deleteCard() {
     emit('deleteCard', {id:currentCard.value.id});
 }
+
+onMounted(() => {
+    document.addEventListener('keyup', function (evt) {
+        if (evt.target.tagName === 'BODY' && evt.code === 'Space' && cardblocks.value.length > 0) {
+            showCard(null, cardblocks.value[0]);
+        }
+    });
+});
 
 
 

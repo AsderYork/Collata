@@ -33,8 +33,8 @@
         
         <div class="overflow-auto">
             <div class="m-1">
-                <div v-if="!textEditStarted" class="empty-text-block rounded p-2" @click="startTextEditing()" tabindex="0" @focus="startTextEditing()">Add an extended description of a task...</div>
-                <AppTextEditor v-if="textEditStarted" v-model="card.text" class="rounded" @focusout="stopTextEditing()"></AppTextEditor>
+                <div v-if="!textEditStarted" class="empty-text-block rounded p-2" @click="startTextEditing()" tabindex="0" @focusin="startTextEditing()">Add an extended description of a task...</div>
+                <AppTextEditor v-if="textEditStarted" v-model="card.text" class="rounded" @focusout="stopTextEditing()" :focusOnMount="true"></AppTextEditor>
             </div>
 
             <div v-if="showComments">
@@ -46,7 +46,7 @@
                         <div v-if="!newCommentStarted" tabindex="0" class="rounded bg-light ms-2 px-2 w-100 btn text-start text-muted" @click="startNewComment()">Write new comment...</div>
                         <div v-else class="w-100 ms-2" @focusout="stopAddingComment()">
                             <AppTextEditor v-model="newCommentText" class="rounded" :lockWritingMode="true" :focusOnMount="true" :readonly="!newCommentStarted"/>
-                            <div class="btn btn-sm btn-primary" @click="saveNewComment()">save</div>
+                            <div class="btn btn-sm btn-primary" @click="saveNewComment()">Save</div>
                         </div>
                     </div>
                 </div>
