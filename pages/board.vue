@@ -9,6 +9,7 @@
     @deleteCard="x => passEvent(x, 'cards', 'delete')"
     @newComment="x => passEvent(x, 'comments', 'post')"
     @deleteComment="x => passEvent(x, 'comments', 'delete')"
+    @editComment="x => passEvent(x, 'comments', 'post')"
     :boardId="boardId"
     :newCardIdLink = "newCardIdLink"
     :cardstacks="cardstacks"/>

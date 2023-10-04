@@ -103,6 +103,7 @@
             @requestCardDelete="deleteCard"
             @newComment="newComment"
             @deleteComment="deleteComment"
+            @editComment="editComment"
             v-model="currentCard"/>
         </miscFormModalClean>
 
@@ -123,7 +124,7 @@ const props = defineProps({
     newCardIdLink: {type:Object},//When we create new card, it's id is unknown. To recognize it after update, user must provide {id, tmpId} object, linking new card to it's new id
 })
 
-const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard', 'deleteCard', 'newComment', 'deleteComment'])
+const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard', 'deleteCard', 'newComment', 'deleteComment', 'editComment'])
 
 const cardblocks = ref(props.cardstacks);
 const newCardBlock = ref({});
@@ -214,6 +215,12 @@ function newComment(comment) {
 function deleteComment(id) {
     emit('deleteComment', {id:id});
 }
+
+function editComment(data) {
+    emit('editComment', data);
+}
+
+
 
 function cardblockReorder() {
 

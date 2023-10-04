@@ -58,13 +58,20 @@
                             </div>
                             <div class="ms-2 w-100">
                                 <div>
-                                    <small class="text-muted" title="edit comment"><font-awesome-icon :icon="['fas', 'pen']" /></small>
+                                    <small class="text-muted" title="edit comment"><a class="text-muted" href="#" @click.prevent="startEditingComment(comment.id)"><font-awesome-icon :icon="['fas', 'pen']"/></a></small>
                                     <small class="text-muted ms-1" title="delete comment"><a class="text-muted" href="#" @click.prevent="deleteComment(comment.id)"><font-awesome-icon :icon="['fas', 'trash']" /></a></small>
                                     {{ comment.author.name }}
                                     <small class="text-muted ms-1" :title="regularTime(comment.createdAt)">{{ HRTime(comment.createdAt) }}</small>
                                 </div>
-                                <div class="rounded px-2 bg-light text-start pb-1">
-                                    <AppTextEditor v-model="comment.text" class="rounded" :readonly="true"/>
+                                <div v-if="commentUnderEdit === comment.id">
+                                    <AppTextEditor v-model="editedCommentText" class="rounded" :focusOnMount="true" :lockWritingMode="true"/>
+                                    <div class="mt-1">
+                                        <div class="btn btn-sm btn-primary" @click="saveEditedComment()">Save</div>
+                                        <div class="btn btn-sm btn-outline-secondary ms-2" @click="dropEditingComment()">Cancel</div>
+                                    </div>
+                                </div>
+                                <div v-else class="rounded px-2 bg-light text-start pb-1">
+                                    <AppTextEditor  v-model="comment.text" class="rounded" :readonly="true"/>
                                 </div>
                             </div>
                         </div>
@@ -90,13 +97,15 @@ import moment from 'moment'
 const props = defineProps({
     modelValue: {type: Object, default: {name:'', text:''}}
 })
-const emit = defineEmits(['requestClose', 'save', 'update:modelValue', 'requestCardDelete', 'newComment', 'deleteComment'])
+const emit = defineEmits(['requestClose', 'save', 'update:modelValue', 'requestCardDelete', 'newComment', 'deleteComment', 'editComment'])
 
 
 
 const addMarkModal = ref(null)
 const headerElement = ref(null)
 const deleteAskModal = ref(null)
+const commentUnderEdit = ref(null);
+const editedCommentText = ref(null);
 
 const editorFocused = ref(false);
 const textEditStarted = computed(() => editorFocused.value || (card.value?.text != '' && card.value?.text != null));
@@ -161,6 +170,25 @@ function deleteComment(id) {
     emit('save');//save before comment alter to preserve actual state
     emit('deleteComment', id);
 }
+
+function startEditingComment(id) {
+    commentUnderEdit.value = id;
+    editedCommentText.value = card.value?.cardsComments?.find(x => x.id === id)?.text;
+}
+
+function dropEditingComment() {
+    editedCommentText.value = '';
+    commentUnderEdit.value = null;
+}
+
+function saveEditedComment() {
+    emit('editComment', {id:commentUnderEdit.value, text:editedCommentText.value});
+    console.log({id:commentUnderEdit.value, text:editedCommentText.value});
+    editedCommentText.value = '';
+    commentUnderEdit.value = null;
+}
+
+
 
 
 onMounted(() => {
