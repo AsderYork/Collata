@@ -62,6 +62,8 @@ async function submitNewBoard() {
             method: 'POST',
             body: {name:newBoardName.value}
         } );
+        boardsRefresh();
+        newBoardRef.value.hideModal();
     }
 
 }
@@ -69,7 +71,7 @@ async function submitNewBoard() {
 
 defineExpose({mainAction});
 
-const {data:boardsList} = await useFetch('/api/boards');
+const {data:boardsList, error:boardsError, refresh:boardsRefresh} = await useFetch('/api/boards');
 
 
 </script>

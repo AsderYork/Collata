@@ -12,7 +12,7 @@ html, body {
             <div class="mx-2">
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
                     <div class="d-flex">
-                        <a href="/" class="d-flex align-items-center mb-lg-0 text-white text-decoration-none">
+                        <a href="/boards" class="d-flex align-items-center mb-lg-0 text-white text-decoration-none">
                         <div class="btn bg-light px-1 py-0">
                             <img src="/favicon.ico" style="height: 30px;">
                         </div>
