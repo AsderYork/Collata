@@ -128,7 +128,6 @@
         this.innerValue = this.editor.storage.markdown.getMarkdown();
       },
       writingModeState(value) {
-          console.log('chage state ' + value)
           this.editor.setOptions({editable: !value});        
       }
     },

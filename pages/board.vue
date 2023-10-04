@@ -27,11 +27,7 @@ async function passEvent(dataToSend, endpoint, method = 'post') {
             method: method,
             body: dataToSend,
         });
-
-        if(endpoint !== 'comments') {
-            cardstackRefresh();
-        }
-        
+    cardstackRefresh();
     return data;
 }
 

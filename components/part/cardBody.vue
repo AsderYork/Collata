@@ -109,11 +109,6 @@ const card = ref(props.modelValue);
 
 const showComments = computed(() => props.modelValue?.id);
 
-
-watch(card, () => {
-    emit('update:modelValue', card);
-})
-
 watch(() => props.modelValue, () => {
     card.value = props.modelValue;
 })
@@ -156,11 +151,14 @@ function stopTextEditing() {
 }
 
 function saveNewComment() {
+    emit('save');//save before comment alter to preserve actual state
     emit('newComment', newCommentText.value);
     newCommentText.value = '';
+    stopAddingComment();
 }
 
 function deleteComment(id) {
+    emit('save');//save before comment alter to preserve actual state
     emit('deleteComment', id);
 }
 

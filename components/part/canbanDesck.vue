@@ -62,7 +62,6 @@
                             <draggable v-model="cardblock.cards" item-key="id" group="cards" @end="cardblockReorder">
                                 <template #item="{element:card}">
                                     <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="showCard(card, cardblock)">
-                                    <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="showCard(card, cardblock)">
                                         <b>{{card.name}}</b>
                                     </div>
                                 </template>
@@ -152,10 +151,6 @@ var currentCardId = ref(null);
 var newCard = ref(null);
 var currentCard = computed(() => newCard.value ?? allCards.value.find(x => x.id === currentCardId.value));
 
-watch(currentCardId, () => {console.log('current card id changed:' + currentCardId.value)});
-watch(currentCard, () => {console.log('current card changed:' + currentCard.value?.name + '; Proper:' + allCards.value.find(x => x.id === currentCardId.value)?.name)});
-
-
 function showCard(card, cardstack) {
     if(card === null) {
         newCard.value = {cardstack:cardstack, tmpId: uuidv4()};
@@ -234,7 +229,6 @@ function cardblockReorder() {
     emit('reorderCardstack', {'cardstacks': toSend});
 }
 
-async function saveCard() {
 async function saveCard() {
     emit('saveCard', currentCard.value);
 }
