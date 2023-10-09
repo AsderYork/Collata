@@ -96,7 +96,7 @@
         </div>
 
         
-        <miscFormModalClean ref="elementsEditForm" :contentStyle="{height:'80vh', background:'#efefef'}" @onClose="hideCurrentCard">
+        <miscFormModalClean ref="elementsEditForm" :contentStyle="{height:'80vh', background:'#efefef'}" @onClose="hideCurrentCard" @onOpen="emit('cardOpen', currentCard)">
             <PartCardBody
             @requestClose="elementsEditForm.hideModal()" 
             @save="saveCard" 
@@ -124,7 +124,7 @@ const props = defineProps({
     newCardIdLink: {type:Object},//When we create new card, it's id is unknown. To recognize it after update, user must provide {id, tmpId} object, linking new card to it's new id
 })
 
-const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard', 'deleteCard', 'newComment', 'deleteComment', 'editComment'])
+const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard', 'deleteCard', 'newComment', 'deleteComment', 'editComment', 'cardOpen', 'cardClose'])
 
 const cardblocks = ref(props.cardstacks);
 const newCardBlock = ref({});
@@ -164,6 +164,7 @@ function showCard(card, cardstack) {
 function hideCurrentCard() {
     saveCard();
     currentCardId.value = null;
+    emit('cardClose');
 }
 
 

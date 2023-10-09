@@ -32,7 +32,7 @@ isModalShown.value = props.shown;
 function showModal(currentEventHandle = null) {
     passedEventHandle.value = currentEventHandle;
     isModalShown.value = true;
-        emit('onOpen');
+    emit('onOpen');
 }
 
 function hideModal() {

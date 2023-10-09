@@ -1,5 +1,6 @@
 <template>
     <div>
+        {{ board }}
     <PartCanbanDesck 
     @newCardstack="x => passEvent(x, 'cardstacks', 'post')" 
     @updateCardstack="x => passEvent(x, 'cardstacks', 'post')" 
@@ -10,6 +11,8 @@
     @newComment="x => passEvent(x, 'comments', 'post')"
     @deleteComment="x => passEvent(x, 'comments', 'delete')"
     @editComment="x => passEvent(x, 'comments', 'post')"
+    @cardOpen = "cardOpen"
+    @cardClose = "cardClose"
     :boardId="boardId"
     :newCardIdLink = "newCardIdLink"
     :cardstacks="cardstacks"/>
@@ -55,7 +58,20 @@ async function saveCard(data) {
     cardstackRefresh();
 }
 
+function cardOpen(data) {
+    useHead({title:board.value.name + ' | ' + (data.name ?? 'New Card')})
+}
+
+function cardClose() {
+    useHead({title:board.value.name})
+}
+
+
 const {data:cardstacks, error:cardstackError, refresh:cardstackRefresh} = await useFetch(`/api/cardstacks?board=${boardId}`);
+const {data:board, error:boardError, refresh:refreshBoard} = await useFetch(`/api/boards?id=${boardId}`);
+
+
+useHead({title:board.value.name})
 
 
 </script>

@@ -7,7 +7,7 @@ export default eventHandler(async (event) => {
 
     if(user) {
         const req = await readBody(event);
-        return addBoard(req.name, user.id);;
+        return addBoard(req.name, user.id);
     }
 
     
