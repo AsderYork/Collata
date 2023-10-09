@@ -61,7 +61,7 @@
                                     <small class="text-muted" title="edit comment"><a class="text-muted" href="#" @click.prevent="startEditingComment(comment.id)"><font-awesome-icon :icon="['fas', 'pen']"/></a></small>
                                     <small class="text-muted ms-1" title="delete comment"><a class="text-muted" href="#" @click.prevent="deleteComment(comment.id)"><font-awesome-icon :icon="['fas', 'trash']" /></a></small>
                                     {{ comment.author.name }}
-                                    <small class="text-muted ms-1" :title="regularTime(comment.createdAt)">{{ HRTime(comment.createdAt) }}</small>
+                                    <small class="text-muted ms-1" :title="regularTime(comment.createdAt)"><MiscTimefromnow :value="comment.createdAt"/></small>
                                 </div>
                                 <div v-if="commentUnderEdit === comment.id">
                                     <AppTextEditor v-model="editedCommentText" class="rounded" :focusOnMount="true" :lockWritingMode="true"/>
@@ -101,7 +101,6 @@ const emit = defineEmits(['requestClose', 'save', 'update:modelValue', 'requestC
 
 
 
-const addMarkModal = ref(null)
 const headerElement = ref(null)
 const deleteAskModal = ref(null)
 const commentUnderEdit = ref(null);
@@ -122,11 +121,6 @@ watch(() => props.modelValue, () => {
     card.value = props.modelValue;
 })
 
-
-
-function HRTime(time) {
-    return moment(time).fromNow();
-}
 
 function regularTime(time) {
     return moment(time);
