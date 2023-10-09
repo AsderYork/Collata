@@ -1,6 +1,6 @@
 <template>
 
-    <div class="p-4 d-flex" style="gap: 2rem;">
+    <div class="p-4 d-flex flex-wrap" style="gap: 2rem;">
         <div class="board d-flex flex-column" v-for="board in AugmentedBoardsList" :title="board.id === null ? 'Add new board' : board.name">
             <a v-if="board.id" class="board-body d-flex" :href="`/board?id=${board.id}`">
                 <h1 class="m-auto text-primary">
