@@ -21,6 +21,7 @@
   <script>
   import { Editor, EditorContent } from '@tiptap/vue-3';
   import StarterKit from '@tiptap/starter-kit';
+  import extensionImage from '@tiptap/extension-image';
   import TextAlign from '@tiptap/extension-text-align';
   import Underline from '@tiptap/extension-underline';
   import Subscript from '@tiptap/extension-subscript';
@@ -186,6 +187,9 @@
           Underline,
           Subscript,
           Superscript,
+          extensionImage.configure({
+					allowBase64: true,
+				  }),
           CharacterCount.configure({
             limit: this.maxLimit,
           }),
