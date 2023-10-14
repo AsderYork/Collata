@@ -1,6 +1,5 @@
 <template>
     <div>
-        {{ board }}
     <PartCanbanDesck 
     @newCardstack="x => passEvent(x, 'cardstacks', 'post')" 
     @updateCardstack="x => passEvent(x, 'cardstacks', 'post')" 

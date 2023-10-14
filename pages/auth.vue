@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 html {
     background: #505050;
 }

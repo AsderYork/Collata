@@ -1,7 +1,7 @@
 <style>
 html, body {
     height: 100%;
-    background: linear-gradient(180deg, rgb(27, 27, 27) 0%, rgba(22,19,23,1) 96%, rgba(34,29,38,1) 100%);
+    background: rgba(12, 9, 15)
 }
 </style>
 
