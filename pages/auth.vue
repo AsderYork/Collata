@@ -1,9 +1,6 @@
-<style scoped>
-html {
-    background: #505050;
-}
-body { 
-    background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(240,165,255,0.4514180672268907) 0%, rgba(77,39,138,0.29735644257703087) 22%, rgba(198,102,102,0.1825105042016807) 47%, rgba(198,102,102,0) 75%);
+<style>
+body.loginpage { 
+    background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgb(62 33 68) 0%, rgb(36 36 36) 22%, rgb(21 16 30 / 81%) 47%, rgb(74 74 74) 75%);
 }
 </style>
 <template>
@@ -72,8 +69,13 @@ definePageMeta({
   auth: {
     unauthenticatedOnly: true,
     navigateAuthenticatedTo: '/'
-  }
+  },
 });
+
+useHead({
+  title: 'Collata | Login',
+  bodyAttrs: {class: 'loginpage'}
+})
 
 async function attemptSignIn() {
     isLoading.value = true;

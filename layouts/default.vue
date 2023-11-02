@@ -1,10 +1,3 @@
-<style>
-html, body {
-    height: 100%;
-    background: rgba(12, 9, 15)
-}
-</style>
-
 <template>
     <div>
         <NuxtLoadingIndicator />

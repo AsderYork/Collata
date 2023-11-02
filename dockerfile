@@ -16,8 +16,6 @@ COPY --chown=nuxtuser:nuxtuser . /app
 # build the nuxt project to generate the artifacts in .output directory
 RUN npm install 
 
-RUN cat /.env
-
 RUN npx nuxt build
 # RUN cp ./prisma/dev.db ./.output/server/node_modules/.prisma/client/dev.db
 #remove any uploads from left from debug and testing
@@ -37,11 +35,11 @@ WORKDIR /app
 # build stage with proper permissions for user nuxt user
 COPY --chown=nuxtuser:nuxtuser --from=build /app/.output ./
 COPY --chown=nuxtuser:nuxtuser --from=build /app/prisma ./prisma
-EXPOSE 3000
+EXPOSE ${PORT}
 
 # set app host and port . In nuxt 3 this is based on nitor and you can read
 #more on this https://nitro.unjs.io/deploy/node#environment-variables
-ENV HOST=0.0.0.0 PORT=3000 NODE_ENV=production DATABASE_URL="file:/app/database/database.db"
+ENV HOST=0.0.0.0 PORT=${PORT} NODE_ENV=production DATABASE_URL=${DATABASE_URL}
 ENV NODE_PATH='/app/server/node_modules'
 
 #RUN export 
@@ -51,4 +49,5 @@ RUN npx --yes prisma
 
 # start the app with dumb init to spawn the Node.js runtime process
 # with signal support
+ENV DATABASE_URL=
 CMD npx prisma migrate deploy && node /app/prisma/seed.js && dumb-init node /app/server/index.mjs

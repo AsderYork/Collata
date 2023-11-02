@@ -7,10 +7,13 @@ services:
       tags:
         - "collata:latest"
     ports:
-      - '${PORT}:3000'
+      - '${PORT}:80'
     volumes:
      - collata-data-uploads:/app/public/uploads
      - collata-data-db:/app/database
+    environment:
+      - DATABASE_URL=file:/app/database/database.db
+      - PORT=80
 volumes:
   collata-data-uploads:
   collata-data-db:
