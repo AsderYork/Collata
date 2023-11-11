@@ -127,7 +127,6 @@ const props = defineProps({
     boardId: {type:Number},
     cardstacks: {type:Object},
     newCardIdLink: {type:Object},//When we create new card, it's id is unknown. To recognize it after update, user must provide {id, tmpId} object, linking new card to it's new id
-    newCardIdLink: {type:Object},//When we create new card, it's id is unknown. To recognize it after update, user must provide {id, tmpId} object, linking new card to it's new id
 })
 
 const emit = defineEmits(['newCardstack', 'updateCardstack', 'deleteCardstack', 'reorderCardstack', 'saveCard', 'deleteCard', 'newComment', 'deleteComment', 'editComment', 'cardOpen', 'cardClose'])
