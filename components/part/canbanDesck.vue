@@ -5,8 +5,11 @@
 
 @media (max-width: 480px) {
     .cardstack {
-    width: 100%;
-}
+        width: 100%;
+    }
+    .active-cards {
+        width: 100%;
+    }
 }
 
 
