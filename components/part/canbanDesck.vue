@@ -1,8 +1,14 @@
 <style>
 .cardstack {
     width: 240px;
-    
 }
+
+@media (max-width: 480px) {
+    .cardstack {
+    width: 100%;
+}
+}
+
 
 .cardstack-end .btn-outline-secondary {
     border: 0px;
