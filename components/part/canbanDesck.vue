@@ -38,7 +38,7 @@
 <template>
     <div class="worktable p-2">
         <client-only>
-            <draggable v-model="cardblocks" item-key="id" group="elements" class="active-cards d-flex" @end="cardblockReorder">
+            <draggable v-model="cardblocks" item-key="id" group="elements" class="active-cards d-flex" delay="100" delayOnTouchOnly="true" @end="cardblockReorder">
                 <template #item="{element:cardblock}">
                     <div class="cardstack card">
                         <div class="cardstack-header py-1">
@@ -59,7 +59,7 @@
                         </div>
 
                         <div class="d-flex flex-column">
-                            <draggable v-model="cardblock.cards" item-key="id" group="cards" @end="cardblockReorder">
+                            <draggable v-model="cardblock.cards" item-key="id" group="cards" delay="100" delayOnTouchOnly="true" @end="cardblockReorder">
                                 <template #item="{element:card}">
                                     <div class="cardstack-card border rounded m-1 p-1 card" @click.prevent="showCard(card, cardblock)">
                                         <b>{{card.name}}</b>
