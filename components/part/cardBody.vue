@@ -24,9 +24,31 @@
 
         <div class="border-bottom">
             <div>
-                <button tabindex="-1" class="btn btn-sm btn-outline-secondary border-0 rounded-top-0" title="Add mark" @click.prevent="addMarkModal.showModal()">
-                    <font-awesome-icon :icon="['fa', 'bookmark']" /> <font-awesome-icon :icon="['fa', 'plus']" />
-                </button>
+
+
+                <div class="dropdown">
+                    <button tabindex="-1" class="btn btn-sm btn-outline-secondary border-0 rounded-top-0 dropdown-toggle" data-bs-toggle="dropdown" title="Add mark">
+                        <font-awesome-icon :icon="['fa', 'bookmark']" />
+                    </button>
+                    <ul class="dropdown-menu py-0">
+                        <li v-for="tag in existingTags">
+                            <div class="d-flex">
+                                <input type="checkbox" class="form-check-input mx-2">
+                                <MiscEditinput class="dropdown-item" :style="{'background-color':tag.color}" v-model="tag.name" :inputclass="{'form-control-sm':true, 'p-0':true, 'my-0':true, 'min-height-20':true}" :editable="true" @click.stop=""></MiscEditinput>
+                            </div>
+                        </li>
+                        <li v-if="existingTags.length == 0"><span class="dropdown-header text-muted">No tags yet...</span></li>
+                        <li><hr class="dropdown-divider my-0"></li>
+                        <li>
+                            <div class="d-flex">
+                                <input type="text" class="form-control form-control-sm rounded-start-0 rounded-end-0" v-model="newTagText">
+                                <button class="btn btn-sm btn-outline-secondary border-0 rounded-start-0 rounded-end-0" @click.stop="addNewTag(newTagText); newTagText = ''">
+                                    <font-awesome-icon :icon="['fa', 'plus']" />
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -105,12 +127,15 @@ const headerElement = ref(null)
 const deleteAskModal = ref(null)
 const commentUnderEdit = ref(null);
 const editedCommentText = ref(null);
+const newTagText = ref("");
 
 const editorFocused = ref(false);
 const textEditStarted = computed(() => editorFocused.value || (card.value?.text != '' && card.value?.text != null));
 
 const newCommentText = ref('')
 const newCommentStarted = ref(false);
+
+const existingTags = ref([]);
 
 
 const card = ref(props.modelValue);
@@ -126,6 +151,9 @@ function regularTime(time) {
     return moment(time);
 }
 
+function addNewTag(tagname, tagcolor = '#ffaa33') {
+    existingTags.value.push({name:tagname, color:tagcolor});
+}
 
 
 function open() {
